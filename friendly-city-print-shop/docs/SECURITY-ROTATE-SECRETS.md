@@ -19,12 +19,13 @@ working tree and added this guidance plus an `.env.example` placeholder file.
      Repository → Settings → Secrets and variables → Actions.
 
 1. Remove tracked env files from the repository (done / recommended)
-   - Removing a tracked file from the working tree does NOT purge it from git
-     history. If you need to expunge the secret from history, consider using
-     `git filter-repo` or the BFG Repo-Cleaner (this is a destructive operation
-     and requires a force-push and coordination with collaborators).
 
-  Example (safe, one-off removal from current branch):
+   Removing a tracked file from the working tree does NOT purge it from git
+   history. If you need to expunge the secret from history, consider using
+   `git filter-repo` or the BFG Repo-Cleaner (this is a destructive operation
+   and requires a force-push and coordination with collaborators).
+
+   Example (safe, one-off removal from current branch):
 
    ```sh
    git rm --cached friendly-city-print-shop/.env.local
@@ -32,9 +33,10 @@ working tree and added this guidance plus an `.env.example` placeholder file.
    git push origin HEAD
    ```
 
-  Example (purge from history — use with caution):
+   Example (purge from history — use with caution):
 
-  1. Using git-filter-repo (recommended over BFG):
+   1. Using git-filter-repo (recommended over BFG):
+
      ```sh
      python -m pip install git-filter-repo
      git clone --mirror <repo-url> repo-mirror.git
@@ -43,7 +45,8 @@ working tree and added this guidance plus an `.env.example` placeholder file.
      git push --force
      ```
 
-  1. Using BFG (alternative):
+    1. Using BFG (alternative):
+
      ```sh
      # read BFG docs first; this is an irreversible history rewrite
      java -jar bfg.jar --delete-files .env.local
@@ -52,18 +55,21 @@ working tree and added this guidance plus an `.env.example` placeholder file.
      git push --force
      ```
 
-  1. Verify and test
-   - After rotating keys and updating secrets in your hosting/CI, re-deploy the
-     app and run the test suite (including the Playwright E2E smoke tests) to
-     ensure server routes and integrations work correctly.
+1. Verify and test
 
-  1. Prevent recurrence
-   - Keep `.env.local` and other env files in `.gitignore` (this repository already
-     includes `.env.local` and `.env.*.local` in `.gitignore`). But note that
-     `.gitignore` does not affect files already tracked by git — you must remove
-     them as shown above.
-   - Consider adding a pre-commit hook to block accidental commits of files that
-     contain secret-looking values (e.g., detect `SUPABASE_SERVICE_ROLE_KEY`).
+    - After rotating keys and updating secrets in your hosting/CI, re-deploy the
+      app and run the test suite (including the Playwright E2E smoke tests) to
+      ensure server routes and integrations work correctly.
+
+1. Prevent recurrence
+
+    - Keep `.env.local` and other env files in `.gitignore` (this repository already
+      includes `.env.local` and `.env.*.local` in `.gitignore`). But note that
+      `.gitignore` does not affect files already tracked by git — you must remove
+      them as shown above.
+
+    - Consider adding a pre-commit hook to block accidental commits of files that
+      contain secret-looking values (e.g., detect `SUPABASE_SERVICE_ROLE_KEY`).
 
 If you'd like, I can:
 

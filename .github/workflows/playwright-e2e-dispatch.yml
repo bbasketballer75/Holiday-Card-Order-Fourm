@@ -1,0 +1,32 @@
+name: Dispatch Playwright E2E
+
+on:
+  workflow_dispatch:
+    inputs:
+      ephemeral:
+        description: 'Run the Playwright E2E workflow using an ephemeral local Supabase instance'
+        required: false
+        default: 'false'
+
+jobs:
+  trigger:
+    name: Dispatch Playwright E2E Workflow
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Trigger Playwright E2E
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const workflowId = 'playwright-e2e.yml';
+            const refBranch = 'main';
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: workflowId,
+              ref: refBranch,
+              inputs: { ephemeral: `${process.env.INPUT_EPHEMERAL || 'false'}` }
+            });
