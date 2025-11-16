@@ -3,6 +3,7 @@
 /* eslint-env node */
 
 // Test script to verify production readiness
+require('dotenv').config({ path: '.env.local' });
 const { createClient } = require('@supabase/supabase-js');
 
 async function testSetup() {

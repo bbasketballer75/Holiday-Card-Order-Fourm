@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS templates (
 -- Forum messages table
 CREATE TABLE IF NOT EXISTS forum_messages (
     id UUID DEFAULT gen_random_uuid () PRIMARY KEY,
-    user TEXT NOT NULL,
+"user" TEXT NOT NULL,
     text TEXT NOT NULL,
     created_at TIMESTAMP
     WITH
@@ -61,7 +61,7 @@ SELECT
 
 CREATE POLICY "Authenticated users can post messages" ON forum_messages FOR INSERT
 WITH
-    CHECK (true);
+CHECK (auth.uid () IS NOT NULL);
 
 -- Orders: only service role can manage (for now)
 CREATE POLICY "Service role can manage orders" ON orders FOR ALL USING (true);
