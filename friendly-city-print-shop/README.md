@@ -30,6 +30,15 @@ npm run dev
 npm run seed
 ```
 
+## Tooling & CLI installs
+
+- Run `npm run setup-dev` (or `npm run setup-dev-windows`) early to install `gh`, the Supabase CLI (see manual instructions below), and Playwright browsers.
+- The Supabase CLI no longer supports `npm install -g supabase`. Instead, download the latest Windows release from [https://github.com/supabase/cli/releases](https://github.com/supabase/cli/releases), unzip it, and add the executable to your `%PATH%` (or use a package manager that supports Supabase CLI). This ensures the CLI is available for seeding and migrations.
+- During Windows setup we tried several installers:
+  - `npm install -g supabase` now fails because the CLI no longer supports npm global installs.
+  - `winget search supabase` and `winget search supabase-cli` return no matches, so winget cannot install it at this time.
+  - Chocolatey’s `supabase-cli` package is currently missing from the default community source (install fails with “package not found”).
+
 ## Production Setup
 
 ### Create Production Accounts
@@ -63,6 +72,8 @@ STRIPE_SECRET_KEY=sk_live_your_secret_key
 NEXT_PUBLIC_BASE_URL=https://your-domain.vercel.app
 PORT=3000
 ```
+
+> 💡 Without `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`, the seed scripts (`npm run seed`, `npm run e2e:run-prod`) will skip automatically. Provide both keys before running the seeds or CI workflow.
 
 ### Stripe Webhook (Optional)
 
