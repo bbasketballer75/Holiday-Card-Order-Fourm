@@ -11,6 +11,7 @@
     "seed": "node ./scripts/seed.js",
     "test-setup": "node ./scripts/test-setup.js",
     "setup": "npm ci && npm run lint || true",
+    "prepare": "husky install .husky",
     "install-hooks": "git config core.hooksPath .githooks",
     "secret-check": "node ./scripts/check-secrets.js",
     "e2e:install": "npx playwright install",
@@ -34,6 +35,7 @@
     "postcss": "^8.4.21",
     "prettier": "^2.8.8",
     "tailwindcss": "^3.4.0",
+    "husky": "^8.0.0",
     "typescript": "^5.2.2"
   }
 }
