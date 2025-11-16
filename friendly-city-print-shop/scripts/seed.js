@@ -21,10 +21,25 @@ const supabase = createClient(url, key, { auth: { persistSession: false } })
 async function main() {
   console.log('Seeding templates...')
   const templates = [
-    { title: 'Snowy Pine', description: 'A cozy snowy theme with pine trees.', price: 1.49, image_url: null },
-    { title: 'Modern Minimal', description: 'Sleek and modern -- great for business cards.', price: 1.79, image_url: null },
-    { title: 'Classic Wreath', description: 'Traditional wreath design with gold foil accents.', price: 1.99, image_url: null },
-  ]
+    {
+      title: 'Snowy Pine',
+      description: 'A cozy snowy theme with pine trees.',
+      price: 1.49,
+      image_url: '/templates/snowy-pine.svg',
+    },
+    {
+      title: 'Modern Minimal',
+      description: 'Sleek and modern -- great for business cards.',
+      price: 1.79,
+      image_url: '/templates/modern-minimal.svg',
+    },
+    {
+      title: 'Classic Wreath',
+      description: 'Traditional wreath design with gold foil accents.',
+      price: 1.99,
+      image_url: '/templates/classic-wreath.svg',
+    },
+  ];
 
   for (const t of templates) {
     const { data, error } = await supabase.from('templates').insert([t]).select().single()

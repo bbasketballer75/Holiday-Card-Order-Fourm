@@ -1,0 +1,128 @@
+name: Playwright E2E
+
+on:
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:
+    inputs:
+      ephemeral:
+        description: 'Run tests with an ephemeral Supabase instance (local) instead of hosted' 
+        required: false
+        default: 'false'
+
+jobs:
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    # Job-level env intentionally does NOT set Supabase keys; we set them in step-level
+    env:
+      NODE_ENV: 'test'
+    defaults:
+      run:
+        working-directory: friendly-city-print-shop
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Prepare ephemeral Supabase (PRs or when requested via workflow input)
+        if: ${{ github.event_name == 'pull_request' || github.event.inputs.ephemeral == 'true' }}
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start ephemeral Supabase (local) for PRs or if requested
+        if: ${{ github.event_name == 'pull_request' || github.event.inputs.ephemeral == 'true' }}
+        run: |
+          # Debugging: print supabase version
+          supabase --version || true
+          # Start Supabase CLI in the background; use debug for additional logs
+          # Mask publishable/secret keys to avoid leaking secrets in logs
+          supabase start --debug 2>&1 | sed -E "s/(Publishable key|Secret key): .*/\1: [redacted]/g" &
+          # Wait for the Supabase admin 'ready' endpoint to respond before continuing.
+          # Loop with a generous timeout to allow Docker images to fully download.
+          ATTEMPTS=120
+          while [ $ATTEMPTS -gt 0 ]; do
+            if curl -sSf http://127.0.0.1:54321/rest-admin/v1/ready >/dev/null 2>&1; then
+              echo "Supabase admin ready"
+              break
+            fi
+            ATTEMPTS=$((ATTEMPTS - 1))
+            sleep 3
+          done
+          if [ $ATTEMPTS -eq 0 ]; then
+            echo "Supabase did not become ready in time"
+            supabase status || true
+            exit 1
+          fi
+
+      - name: Extract Supabase envs for local dev
+        if: ${{ github.event_name == 'pull_request' || github.event.inputs.ephemeral == 'true' }}
+        run: |
+          # Extract SUPABASE envs and map them to NEXT_PUBLIC_* keys for build-time replacement
+          SUPA_URL=$(supabase status -o env | sed -n 's/^SUPABASE_URL=//p')
+          SUPA_ANON=$(supabase status -o env | sed -n 's/^SUPABASE_ANON_KEY=//p')
+          SUPA_SERVICE=$(supabase status -o env | sed -n 's/^SUPABASE_SERVICE_ROLE_KEY=//p')
+          echo "NEXT_PUBLIC_SUPABASE_URL=${SUPA_URL}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPA_ANON}" >> $GITHUB_ENV
+          echo "SUPABASE_SERVICE_ROLE_KEY=${SUPA_SERVICE}" >> $GITHUB_ENV
+
+      - name: Build (Hosted)
+        if: ${{ !(github.event_name == 'pull_request' || github.event.inputs.ephemeral == 'true') }}
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: npm run build
+
+      - name: Build (Ephemeral/PR)
+        if: ${{ github.event_name == 'pull_request' || github.event.inputs.ephemeral == 'true' }}
+        run: npm run build
+
+      - name: E2E seed data (hosted)
+        if: ${{ !(github.event_name == 'pull_request' || github.event.inputs.ephemeral == 'true') }}
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+        run: npm run e2e:seed
+
+      - name: E2E seed data (ephemeral)
+        if: ${{ github.event_name == 'pull_request' || github.event.inputs.ephemeral == 'true' }}
+        run: npm run e2e:seed
+
+      - name: Start production server
+        env:
+          PORT: 3000
+        run: |
+          nohup npm run start &
+          npx wait-on http://localhost:3000 --timeout 120000
+
+      - name: Run Playwright tests
+        run: npm run test:e2e:ci
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: friendly-city-print-shop/playwright-report
+
+      - name: E2E cleanup (always)
+        if: always()
+        run: npm run e2e:cleanup || true
+
+      - name: Stop local Supabase (if started)
+        if: ${{ github.event_name == 'pull_request' || github.event.inputs.ephemeral == 'true' }}
+        run: supabase stop || true

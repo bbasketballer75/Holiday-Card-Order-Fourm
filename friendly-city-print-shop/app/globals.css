@@ -2,6 +2,243 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Holiday Color Palette */
+:root {
+  --holiday-red: #c41e3a;
+  --holiday-green: #185c37;
+  --holiday-gold: #d4af37;
+  --holiday-cream: #fef5e7;
+  --holiday-silver: #e8e8e8;
+  --holiday-dark: #1a1a1a;
+  --holiday-white: #ffffff;
+  
+  /* Accent shades */
+  --holiday-red-light: #e85d75;
+  --holiday-green-light: #2d7a52;
+  --holiday-gold-light: #e8c547;
+}
+
+/* Base styles */
+@layer base {
+  body {
+    background-color: var(--holiday-cream);
+    color: var(--holiday-dark);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    letter-spacing: -0.025em;
+    color: var(--holiday-green);
+  }
+  
+  h1 {
+    font-size: 2.25rem;
+    background: linear-gradient(135deg, var(--holiday-red), var(--holiday-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  @media (min-width: 768px) {
+    h1 {
+      font-size: 3rem;
+    }
+  }
+  
+  h2 {
+    font-size: 1.875rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    h2 {
+      font-size: 2.25rem;
+    }
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  a {
+    transition: color 0.2s;
+  }
+}
+
+/* Holiday Components */
+@layer components {
+  /* Festive button styles */
+  .btn-holiday {
+    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-200 transform;
+    background: linear-gradient(135deg, var(--holiday-red), #a01530);
+    color: var(--holiday-white);
+    box-shadow: 0 4px 15px rgba(196, 30, 58, 0.3);
+  }
+  
+  .btn-holiday:hover {
+    @apply scale-105 shadow-lg;
+    box-shadow: 0 8px 25px rgba(196, 30, 58, 0.5);
+  }
+  
+  .btn-holiday:active {
+    @apply scale-95;
+  }
+  
+  /* Secondary button - green holiday style */
+  .btn-holiday-secondary {
+    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-200;
+    background: linear-gradient(135deg, var(--holiday-green), #0f3a22);
+    color: var(--holiday-white);
+    box-shadow: 0 4px 15px rgba(24, 92, 55, 0.3);
+  }
+  
+  .btn-holiday-secondary:hover {
+    @apply scale-105 shadow-lg;
+    box-shadow: 0 8px 25px rgba(24, 92, 55, 0.5);
+  }
+  
+  /* Gold accent button */
+  .btn-holiday-gold {
+    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-200;
+    background: linear-gradient(135deg, var(--holiday-gold), #b8860b);
+    color: var(--holiday-dark);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  }
+  
+  .btn-holiday-gold:hover {
+    @apply scale-105 shadow-lg;
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+  }
+  
+  /* Holiday card wrapper */
+  .card-holiday {
+    @apply rounded-xl overflow-hidden shadow-md transition-all duration-300;
+    background: var(--holiday-white);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  
+  .card-holiday:hover {
+    @apply shadow-2xl transform -translate-y-1;
+    border-color: var(--holiday-gold);
+  }
+  
+  /* Festive input fields */
+  .input-holiday {
+    @apply w-full px-4 py-3 rounded-lg border-2 focus:outline-none transition-all duration-200;
+    background: var(--holiday-white);
+    color: var(--holiday-dark);
+    border-color: var(--holiday-silver);
+  }
+  
+  .input-holiday:focus {
+    border-color: var(--holiday-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  }
+  
+  /* Festive text area */
+  .textarea-holiday {
+    @apply w-full px-4 py-3 rounded-lg border-2 focus:outline-none transition-all duration-200 resize-none;
+    background: var(--holiday-white);
+    color: var(--holiday-dark);
+    border-color: var(--holiday-silver);
+    font-family: inherit;
+  }
+  
+  .textarea-holiday:focus {
+    border-color: var(--holiday-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  }
+  
+  /* Holiday gradient overlay */
+  .gradient-holiday {
+    background: linear-gradient(135deg, rgba(196, 30, 58, 0.05), rgba(24, 92, 55, 0.05));
+  }
+  
+  /* Snowflake decoration */
+  .snowflake {
+    color: var(--holiday-silver);
+    font-size: 1.5rem;
+    display: inline-block;
+    margin: 0 0.25rem;
+  }
+  
+  /* Festive divider */
+  .divider-holiday {
+    @apply my-6;
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--holiday-green), transparent);
+  }
+  
+  /* Container styles */
+  .container-holiday {
+    @apply container mx-auto px-4 py-8;
+  }
+  
+  /* Text gradient utilities */
+  .text-gradient-holiday {
+    background: linear-gradient(135deg, var(--holiday-red), var(--holiday-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Hover lift effect */
+  .hover-lift {
+    @apply transition-all duration-200 transform hover:scale-105 hover:-translate-y-2;
+  }
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+  }
+}
+
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes snowfall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
 html, body, #__next {
   height: 100%;
 }
