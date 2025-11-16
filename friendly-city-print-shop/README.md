@@ -83,15 +83,20 @@ For order fulfillment automation, set up Stripe webhooks to listen for `checkout
 
 1. Sign in to [Railway.app](https://railway.app)
 1. Click **New Project** → **Deploy from GitHub repo**
-1. Select your GitHub repository
-1. Railway will auto-detect Next.js and configure the build
+1. Select your GitHub repository (`bbasketballer75/Holiday-Card-Order-Fourm`)
+1. Railway will auto-detect Next.js and configure the build using `railway.toml`
 1. Add environment variables in Railway dashboard (Variables tab):
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `STRIPE_PUBLISHABLE_KEY`
    - `STRIPE_SECRET_KEY`
+   - `PORT=3000`
 1. Railway will auto-deploy on every GitHub push to `main`
+
+**Railway URL**: After deployment, Railway provides a `*.railway.app` URL. Update your `NEXT_PUBLIC_BASE_URL` with this URL for proper redirects.
+
+**Free Tier**: Railway provides $5/month free credits - perfect for development and small production workloads.
 
 ## Testing Production Setup
 
