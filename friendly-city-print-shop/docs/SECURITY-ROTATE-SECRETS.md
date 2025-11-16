@@ -80,6 +80,46 @@ If you'd like, I can:
 1. proceed to rotate keys and update hosting secrets if you provide access
    method/confirmation.
 
+## ✅ COMPLETED: Added helper scripts for secret management
+
+- `scripts/set-gh-secret.sh` - Set individual GitHub repository secrets
+- `scripts/set-gh-secret-env.sh` - Set environment-specific secrets
+- `scripts/rotate-supabase-keys.sh` - Update all Supabase secrets from .env.local
+
+## FINAL STEPS TO COMPLETE SECURITY REMEDIATION
+
+1. **Rotate Supabase keys immediately:**
+   - Go to <https://supabase.com/dashboard>
+   - Select your project
+   - Navigate to Settings → API
+   - Click "Regenerate" next to Service Role key
+   - Copy the new keys (URL, anon key, service role key)
+
+2. **Update .env.local with new keys:**
+
+   ```bash
+   NEXT_PUBLIC_SUPABASE_URL=https://your-new-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_new_anon_key
+   SUPABASE_SERVICE_ROLE_KEY=your_new_service_role_key
+   ```
+
+3. **Update GitHub Actions secrets:**
+
+   ```bash
+   cd friendly-city-print-shop
+   ./scripts/rotate-supabase-keys.sh
+   ```
+
+4. **Update Railway environment variables:**
+   - Go to Railway dashboard
+   - Select your project
+   - Go to Variables tab
+   - Update the three Supabase variables with new values
+
+5. **Test the deployment:**
+   - Push to trigger Railway auto-deploy
+   - Run E2E tests: `npm run e2e:run-prod`
+
 Please rotate the exposed Supabase keys now. I removed the tracked `.env.local`
 from the working tree in this change to help stop further accidental exposure.
 
