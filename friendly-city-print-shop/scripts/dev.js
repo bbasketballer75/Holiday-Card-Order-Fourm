@@ -4,13 +4,12 @@ const { spawn } = require('child_process');
 // Use the PORT env var if set, otherwise default to 3000
 const port = process.env.PORT || 3000;
 
-// On windows, npx is often 'npx.cmd' in PATH
-const isWin = /^win/.test(process.platform);
-const npxCmd = isWin ? 'npx.cmd' : 'npx';
+const nodeExec = process.execPath || 'node';
+const nextBin = require('path').join(__dirname, '..', 'node_modules', 'next', 'dist', 'bin', 'next');
 
-const child = spawn(npxCmd, ['next', 'dev', '-p', String(port)], {
+const child = spawn(nodeExec, [nextBin, 'dev', '-p', String(port)], {
   stdio: 'inherit',
-  shell: true,
+  shell: false,
 });
 
 child.on('close', (code) => {
