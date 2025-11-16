@@ -50,7 +50,8 @@ jobs:
           # Debugging: print supabase version
           supabase --version || true
           # Start Supabase CLI in the background; use debug for additional logs
-          supabase start --debug &
+          # Mask publishable/secret keys to avoid leaking secrets in logs
+          supabase start --debug 2>&1 | sed -E "s/(Publishable key|Secret key): .*/\1: [redacted]/g" &
           # Wait for the Supabase admin 'ready' endpoint to respond before continuing.
           # Loop with a generous timeout to allow Docker images to fully download.
           ATTEMPTS=120
