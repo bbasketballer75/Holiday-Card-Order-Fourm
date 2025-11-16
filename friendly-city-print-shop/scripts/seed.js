@@ -1,11 +1,18 @@
 const { createClient } = require('@supabase/supabase-js')
 
-const url = process.env.SUPABASE_URL
+// Load environment variables from .env.local
+require('dotenv').config({ path: '.env.local' })
+
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 if (!url || !key) {
-  console.error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required to run the seed script.')
-  console.error('Create a Supabase project and set environment variables. The SERVICE_ROLE_KEY is used for seeding.')
+  console.error(
+    'NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required to run the seed script.',
+  );
+  console.error(
+    'Create a Supabase project and set environment variables in .env.local. The SERVICE_ROLE_KEY is used for seeding.',
+  );
   process.exit(1)
 }
 
@@ -25,6 +32,24 @@ async function main() {
       console.error('Insert error', error.message)
     } else {
       console.log('Inserted:', data.id || data)
+    }
+  }
+
+  console.log('Seeding forum messages...');
+  const forumMessages = [
+    {
+      user: 'Admin',
+      text: 'Welcome to the Friendly City forum! Ask any questions about templates and orders here.',
+    },
+    { user: 'Visitor', text: 'Hi there! I love the Snowy Pine option.' },
+  ];
+
+  for (const m of forumMessages) {
+    const { data, error } = await supabase.from('forum_messages').insert([m]).select().single();
+    if (error) {
+      console.error('Forum insert error', error.message);
+    } else {
+      console.log('Inserted forum message:', data.id || data);
     }
   }
 
