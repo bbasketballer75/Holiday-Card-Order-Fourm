@@ -11,7 +11,7 @@ export default function TemplateCard({
   imageUrl,
 }: {
   title: string;
-  description: string;
+  description?: string | null;
   price?: number;
   imageUrl?: string | null;
 }) {
