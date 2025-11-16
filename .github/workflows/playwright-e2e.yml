@@ -51,9 +51,22 @@ jobs:
           supabase --version || true
           # Start Supabase CLI in the background; use debug for additional logs
           supabase start --debug &
-          # Wait for the Supabase API to become responsive. Use 127.0.0.1 to avoid
-          # any potential host->localhost DNS resolution differences on the runner.
-          npx wait-on http://127.0.0.1:54321 --timeout 360000
+          # Wait for the Supabase admin 'ready' endpoint to respond before continuing.
+          # Loop with a generous timeout to allow Docker images to fully download.
+          ATTEMPTS=120
+          while [ $ATTEMPTS -gt 0 ]; do
+            if curl -sSf http://127.0.0.1:54321/rest-admin/v1/ready >/dev/null 2>&1; then
+              echo "Supabase admin ready"
+              break
+            fi
+            ATTEMPTS=$((ATTEMPTS - 1))
+            sleep 3
+          done
+          if [ $ATTEMPTS -eq 0 ]; then
+            echo "Supabase did not become ready in time"
+            supabase status || true
+            exit 1
+          fi
 
       - name: Extract Supabase envs for local dev
         if: ${{ github.event_name == 'pull_request' || github.event.inputs.ephemeral == 'true' }}
