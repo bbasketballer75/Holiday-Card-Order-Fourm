@@ -57,8 +57,8 @@ In CI, we provide options to either use a hosted Supabase (set secrets) or run a
 function genInstr() {
   const pkg = readJSON(PACKAGE_JSON);
   const scripts = pkg.scripts || {};
-  const e2eQuick = scripts['test:e2e'] || 'npm run test:e2e';
-  const e2eProd = scripts['e2e:run-prod'] || 'npm run e2e:run-prod';
+  const e2eQuick = 'npm run test:e2e';
+  const e2eProd = 'npm run e2e:run-prod';
 
   const content = `Quickstart
 ----------
@@ -68,14 +68,14 @@ To run Playwright E2E quickly against the dev server:
 ~~~bash
 cd friendly-city-print-shop
 npm ci
-npm run ${e2eQuick}
+npm run test:e2e
 ~~~
 To run a full CI-like e2e locally (seed -> production build -> start -> test -> cleanup):
 
 ~~~bash
 cd friendly-city-print-shop
 npm ci
-npm run ${e2eProd}
+npm run e2e:run-prod
 ~~~
 `;
 

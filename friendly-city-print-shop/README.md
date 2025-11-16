@@ -8,9 +8,9 @@ An interactive online forum and ordering system for holiday cards built with Nex
    - [Supabase](https://supabase.com) - Create a new project specifically for the Holiday Card Order Forum
    - [Stripe](https://stripe.com) - Create a new account for payment processing
 
-2. Copy `.env.example` to `.env.local` and fill out your **unique** Supabase and Stripe credentials for this project only.
+1. Copy `.env.example` to `.env.local` and fill out your **unique** Supabase and Stripe credentials for this project only.
 
-3. Install dependencies:
+1. Install dependencies:
 
 ```bash
 npm install
@@ -24,7 +24,7 @@ pnpm install
 npm run dev
 ```
 
-2. Seed sample templates (optional, requires SUPABASE_SERVICE_ROLE_KEY):
+1. Seed sample templates (optional, requires SUPABASE_SERVICE_ROLE_KEY):
 
 ```bash
 npm run seed
@@ -32,18 +32,18 @@ npm run seed
 
 ## Production Setup
 
-### 1. Create Production Accounts
+### Create Production Accounts
 
 - **Supabase**: [Create a new project](https://supabase.com) for production
 - **Stripe**: [Create a new account](https://stripe.com) for payment processing
 - **Vercel**: [Sign up](https://vercel.com) for hosting (free tier available)
 
-### 2. Database Setup
+### Database Setup
 
 1. Go to your Supabase project dashboard
-2. Navigate to SQL Editor
-3. Run the contents of `supabase-schema.sql` to create tables and policies
-4. Run `npm run seed` to populate initial template data
+1. Navigate to SQL Editor
+1. Run the contents of `supabase-schema.sql` to create tables and policies
+1. Run `npm run seed` to populate initial template data
 
 ### 3. Environment Variables
 
@@ -64,15 +64,15 @@ NEXT_PUBLIC_BASE_URL=https://your-domain.vercel.app
 PORT=3000
 ```
 
-### 4. Stripe Webhook (Optional)
+### Stripe Webhook (Optional)
 
 For order fulfillment automation, set up Stripe webhooks to listen for `checkout.session.completed` events.
 
-### 5. Deploy to Vercel
+### Deploy to Vercel
 
 1. Connect your GitHub repository to Vercel
-2. Add environment variables in Vercel dashboard
-3. Deploy!
+1. Add environment variables in Vercel dashboard
+1. Deploy!
 
 ## Testing Production Setup
 
@@ -115,8 +115,7 @@ On CI, add the following repository secrets to run E2E against a Supabase test p
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (public anon key)
 - `SUPABASE_SERVICE_ROLE_KEY` (server-side service role key — store securely)
 
-Helper scripts
---------------
+## Helper scripts
 
 This repository includes helper scripts in `/scripts` to make CI and secret management easier:
 

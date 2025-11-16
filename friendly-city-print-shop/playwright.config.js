@@ -17,6 +17,7 @@ module.exports = {
     baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
     headless: true,
   },
+  reporter: [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]],
   webServer: webServerConfig,
   projects: [{ name: 'chromium', use: { browserName: 'chromium' } }],
 };
