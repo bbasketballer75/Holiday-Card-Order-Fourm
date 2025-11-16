@@ -1,16 +1,16 @@
-"use client"
+'use client';
 
-import { useState } from 'react'
-import type { FormEvent } from 'react'
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 
 // The name in the function type parameter is a type-level identifier. ESLint's
 // `no-unused-vars` can incorrectly flag this for TypeScript types; disable it here.
 /* eslint-disable no-unused-vars */
-type ForumInputProps = { onAdd: (payload: string) => void }
+type ForumInputProps = { onAdd: (payload: string) => void };
 /* eslint-enable no-unused-vars */
 
 export default function ForumInput({ onAdd }: ForumInputProps) {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {

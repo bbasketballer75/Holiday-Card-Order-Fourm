@@ -16,9 +16,9 @@ export default function ForumList({
   onReply,
   onLike,
 }: {
-  items: ForumItem[]
-  onReply?: Function
-  onLike?: Function
+  items: ForumItem[];
+  onReply?: Function;
+  onLike?: Function;
 }) {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
@@ -101,8 +101,8 @@ export default function ForumList({
                   {it.pending
                     ? 'Sending...'
                     : it.failed
-                    ? 'Failed to send'
-                    : timeAgo(it.created_at)}
+                      ? 'Failed to send'
+                      : timeAgo(it.created_at)}
                 </p>
               </div>
             </div>

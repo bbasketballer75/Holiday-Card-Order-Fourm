@@ -14,8 +14,14 @@ const baseURL = `http://localhost:${port}`;
 
 function runScript(command, args, opts = {}) {
   return new Promise((resolve, reject) => {
-    const cp = spawn(command, args, Object.assign({ stdio: 'inherit', cwd: root, env: process.env }, opts));
-    cp.on('exit', (code) => code === 0 ? resolve(0) : reject(new Error(`Exited with code ${code}`)));
+    const cp = spawn(
+      command,
+      args,
+      Object.assign({ stdio: 'inherit', cwd: root, env: process.env }, opts),
+    );
+    cp.on('exit', (code) =>
+      code === 0 ? resolve(0) : reject(new Error(`Exited with code ${code}`)),
+    );
     cp.on('error', (err) => reject(err));
   });
 }
@@ -24,7 +30,11 @@ async function main() {
   try {
     // Seed first
     console.log('E2E run: seeding data (if configured)');
-    try { await runScript(process.platform === 'win32' ? 'node' : 'node', ['scripts/e2e-setup.js']); } catch (e) { console.warn('Seeding failed or skipped:', e.message); }
+    try {
+      await runScript(process.platform === 'win32' ? 'node' : 'node', ['scripts/e2e-setup.js']);
+    } catch (e) {
+      console.warn('Seeding failed or skipped:', e.message);
+    }
 
     // Build
     console.log('E2E run: building production');
@@ -32,7 +42,11 @@ async function main() {
 
     // Start production server directly via node (gives us a handle to the child process)
     console.log('E2E run: starting production server');
-    const serverProcess = spawn('node', ['node_modules/next/dist/bin/next', 'start', '-p', String(port)], { cwd: root, detached: true, stdio: 'inherit', env: process.env });
+    const serverProcess = spawn(
+      'node',
+      ['node_modules/next/dist/bin/next', 'start', '-p', String(port)],
+      { cwd: root, detached: true, stdio: 'inherit', env: process.env },
+    );
 
     const cleanup = async () => {
       try {
@@ -41,11 +55,24 @@ async function main() {
           try {
             process.kill(serverProcess.pid, 'SIGTERM');
           } catch (err) {
-            console.warn('E2E run: failed to kill server process by PID, attempting fallback cleanup', err.message);
+            console.warn(
+              'E2E run: failed to kill server process by PID, attempting fallback cleanup',
+              err.message,
+            );
             // Fallback: Try to cleanup port 3000 via node child process!
             if (process.platform === 'win32') {
               // Use powershell fallback
-              spawn('powershell', ['-NoProfile', '-WindowStyle', 'Hidden', '-Command', `& { Get-NetTCPConnection -LocalPort ${port} | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force } }`], { stdio: 'ignore' });
+              spawn(
+                'powershell',
+                [
+                  '-NoProfile',
+                  '-WindowStyle',
+                  'Hidden',
+                  '-Command',
+                  `& { Get-NetTCPConnection -LocalPort ${port} | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force } }`,
+                ],
+                { stdio: 'ignore' },
+              );
             } else {
               spawn('bash', ['-lc', `fuser -k ${port}/tcp || true`], { stdio: 'ignore' });
             }

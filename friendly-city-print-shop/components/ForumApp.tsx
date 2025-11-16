@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import ForumList from './ForumList'
-import ForumInput from './ForumInput'
-import { supabase } from '../lib/supabaseClient'
+import { useState, useEffect } from 'react';
+import ForumList from './ForumList';
+import ForumInput from './ForumInput';
+import { supabase } from '../lib/supabaseClient';
 
 interface Message {
   id: string;
@@ -17,8 +17,8 @@ interface Message {
 }
 
 export default function ForumApp() {
-  const [items, setItems] = useState<Message[]>([])
-  const [loading, setLoading] = useState(true)
+  const [items, setItems] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(10);
   const [announcement, setAnnouncement] = useState('');
 
@@ -94,17 +94,17 @@ export default function ForumApp() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messageId, action, userName: 'Visitor' }),
-      })
+      });
       if (!resp.ok) {
-        const txt = await resp.text()
-        throw new Error(txt || 'Like API error')
+        const txt = await resp.text();
+        throw new Error(txt || 'Like API error');
       }
       // refresh messages to reflect counts/state
-      await fetchMessages()
+      await fetchMessages();
     } catch (err) {
-      console.error('Like API error', err)
+      console.error('Like API error', err);
     }
-  }
+  };
 
   const loadMore = () => setVisibleCount((v) => v + 10);
 
@@ -119,7 +119,9 @@ export default function ForumApp() {
     <div>
       <ForumInput onAdd={handleAdd} />
       {/* Announce new messages for screen readers */}
-      <div aria-live="polite" className="sr-only">{announcement}</div>
+      <div aria-live="polite" className="sr-only">
+        {announcement}
+      </div>
       <ForumList items={items.slice(0, visibleCount)} onReply={handleReply} onLike={handleLike} />
       {items.length > visibleCount && (
         <div className="text-center mt-6">

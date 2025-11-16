@@ -1,10 +1,10 @@
-const { createClient } = require('@supabase/supabase-js')
+const { createClient } = require('@supabase/supabase-js');
 
 // Load environment variables from .env.local
-require('dotenv').config({ path: '.env.local' })
+require('dotenv').config({ path: '.env.local' });
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!url || !key) {
   console.error(
@@ -13,13 +13,13 @@ if (!url || !key) {
   console.error(
     'Create a Supabase project and set environment variables in .env.local. The SERVICE_ROLE_KEY is used for seeding.',
   );
-  process.exit(1)
+  process.exit(1);
 }
 
-const supabase = createClient(url, key, { auth: { persistSession: false } })
+const supabase = createClient(url, key, { auth: { persistSession: false } });
 
 async function main() {
-  console.log('Seeding templates...')
+  console.log('Seeding templates...');
   const templates = [
     {
       title: 'Snowy Pine',
@@ -42,11 +42,11 @@ async function main() {
   ];
 
   for (const t of templates) {
-    const { data, error } = await supabase.from('templates').insert([t]).select().single()
+    const { data, error } = await supabase.from('templates').insert([t]).select().single();
     if (error) {
-      console.error('Insert error', error.message)
+      console.error('Insert error', error.message);
     } else {
-      console.log('Inserted:', data.id || data)
+      console.log('Inserted:', data.id || data);
     }
   }
 
@@ -68,12 +68,12 @@ async function main() {
     }
   }
 
-  console.log('Done')
+  console.log('Done');
 }
 
 main()
   .then(() => process.exit(0))
   .catch((err) => {
-    console.error(err)
-    process.exit(1)
-  })
+    console.error(err);
+    process.exit(1);
+  });
