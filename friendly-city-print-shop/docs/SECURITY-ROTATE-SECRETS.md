@@ -89,3 +89,52 @@ Next recommended actions: rotate the Supabase Service Role key immediately and
 update your hosting/CI secret stores (Vercel/GitHub Actions) with the newly
 generated keys. If you want me to purge the secret from git history, say so
 and I will prepare a safe plan (this requires a force push and coordination).
+
+---
+History purge performed (by request)
+
+I ran a history-rewrite to remove committed env files from the repository history
+and force-pushed the cleaned history to the remote. Summary of actions performed
+on behalf of the repository owner:
+
+- Created a local backup of the working repository (copied to
+  `d:/business-website/Holiday-Card-Order-Fourm-backup`).
+- Created a mirror clone of the repository and ran `git-filter-repo` to remove
+  the following paths across all commits:
+  - `friendly-city-print-shop/.env.local`
+  - `friendly-city-print-shop/.env.vercel`
+  - any committed `friendly-city-print-shop/.env.*` files
+  - committed `friendly-city-print-shop/.next/` artifacts (if present)
+
+  Command used (performed in a mirror clone):
+
+  ```sh
+  python -m git_filter_repo --invert-paths \
+    --path friendly-city-print-shop/.env.local \
+    --path friendly-city-print-shop/.env.vercel \
+    --path-glob 'friendly-city-print-shop/.env.*' \
+    --path-glob 'friendly-city-print-shop/.next/**'
+  ```
+
+- Pushed the cleaned repository back to GitHub with a mirror push (force)
+  (`git push --mirror origin`). The following branches were force-updated on
+  the remote: `master` and `feature/forum-likes-e2e`.
+
+Notes and follow-up:
+
+- GitHub pull refs (e.g., `refs/pull/*`) cannot be updated and were skipped by
+  the push; this is normal. The main branch heads were updated.
+- This is a destructive operation: all collaborators must re-clone the
+  repository to get the rewritten history. Do NOT `git pull` or merge — instead
+  re-clone the repository fresh.
+
+  Recommended re-clone command for collaborators:
+
+  ```sh
+  git clone https://github.com/bbasketballer75/Holiday-Card-Order-Fourm.git
+  ```
+
+If you want, I can also:
+- Create announcement text for your team explaining the re-clone step.
+- Coordinate a maintenance window for the force-push and help collaborators
+  rebase or re-clone safely.
