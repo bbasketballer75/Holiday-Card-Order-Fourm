@@ -1,0 +1,29 @@
+name: Doc check
+
+on:
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: friendly-city-print-shop
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm ci
+      - name: Generate docs
+        run: npm run docs:generate
+      - name: Check docs up-to-date
+        run: |
+          if [[ -n $(git status --porcelain docs) ]]; then
+            echo "Docs are outdated; please run 'npm run docs:generate' and commit changes";
+            git status --porcelain docs;
+            exit 1;
+          fi

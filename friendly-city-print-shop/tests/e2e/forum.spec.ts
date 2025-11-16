@@ -1,7 +1,11 @@
 import { test, expect } from '@playwright/test'
 
 test('post, reply and like flow', async ({ page }) => {
-  await page.goto('/forum')
+    const base = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000'
+    await page.goto(`${base}/forum`, { waitUntil: 'networkidle' })
+
+    // Wait for the textarea to appear (hydation can take a moment in dev)
+    await page.waitForSelector('textarea', { timeout: 15000 })
 
   // Post a new message
   const unique = `E2E test ${Date.now()}`

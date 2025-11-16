@@ -27,7 +27,12 @@ export default function ForumApp() {
   }, []);
 
   const fetchMessages = async () => {
-    if (!supabase) return;
+    if (!supabase) {
+      // If Supabase isn't configured (e.g., local dev without env vars),
+      // we should stop loading so the client-side UI (input form) can render.
+      setLoading(false);
+      return;
+    }
     const { data, error } = await supabase
       .from('forum_messages')
       .select('id, "user", text, created_at')

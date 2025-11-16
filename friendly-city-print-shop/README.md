@@ -99,3 +99,37 @@ npm run seed
 ## Notes
 
 - This scaffold is intentionally minimal. Replace placeholder images and content with your brand resources.
+
+## E2E & CI (Playwright)
+
+This project includes Playwright E2E tests under `tests/e2e`. To run a CI-like E2E test locally (production build, server start, tests, cleanup):
+
+```bash
+npm ci
+npm run e2e:run-prod
+```
+
+On CI, add the following repository secrets to run E2E against a Supabase test project:
+
+- `NEXT_PUBLIC_SUPABASE_URL` (e.g., <https://xxxx.supabase.co>)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` (public anon key)
+- `SUPABASE_SERVICE_ROLE_KEY` (server-side service role key — store securely)
+
+Helper scripts
+--------------
+
+This repository includes helper scripts in `/scripts` to make CI and secret management easier:
+
+- `scripts/set-gh-secret.sh` — set a repository secret using the `gh` CLI
+- `scripts/set-gh-secret-env.sh` — set a secret scoped to a GitHub Environment
+- `scripts/rotate-supabase-keys.sh` — update GitHub Secrets with new Supabase keys (does not rotate inside Supabase)
+
+Example to set secrets using `gh` (local machine):
+
+```bash
+./scripts/set-gh-secret.sh NEXT_PUBLIC_SUPABASE_URL https://xxxx.supabase.co
+./scripts/set-gh-secret.sh NEXT_PUBLIC_SUPABASE_ANON_KEY pk_xxxxx
+./scripts/set-gh-secret.sh SUPABASE_SERVICE_ROLE_KEY sk_xxxxx
+```
+
+See `docs/CI-E2E.md` for details and recommended practices.

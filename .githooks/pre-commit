@@ -7,6 +7,13 @@ if command -v node >/dev/null 2>&1; then
     echo "\nCommit aborted by pre-commit hook: secret patterns detected."
     exit $status
   fi
+  
+  # Generate docs automatically and prevent commit if docs changed
+  node ./scripts/gen-docs.js
+  if [ -n "$(git status --porcelain docs | tee /dev/stderr)" ]; then
+    echo "\nCommit aborted: docs changed by generator. Please 'git add' updated docs and re-commit.";
+    exit 1
+  fi
 else
   echo "Node.js not found; skipping secret check. Install Node.js to enable pre-commit secret scanning."
 fi
