@@ -76,3 +76,16 @@ If you'd like, I can:
 
 Please rotate the exposed Supabase keys now. I removed the tracked `.env.local`
 from the working tree in this change to help stop further accidental exposure.
+
+---
+Actions performed (branch: feature/forum-likes-e2e)
+
+- Commit: c90856c — removed tracked `friendly-city-print-shop/.env.vercel` and
+  added `.env.example` and `.github/workflows/secret-scan.yml`.
+- I replaced the local working copies of `.env.local` and `.env.vercel` with
+  non-sensitive placeholder values (they remain untracked).
+
+Next recommended actions: rotate the Supabase Service Role key immediately and
+update your hosting/CI secret stores (Vercel/GitHub Actions) with the newly
+generated keys. If you want me to purge the secret from git history, say so
+and I will prepare a safe plan (this requires a force push and coordination).
