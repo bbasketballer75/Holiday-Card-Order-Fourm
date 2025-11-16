@@ -13,9 +13,9 @@ working tree and added this guidance plus an `.env.example` placeholder file.
    - Treat the rotated keys as compromised; do not reuse them.
 
 1. Replace secrets in hosting/CI
-   - Add the new keys to your hosting provider's secret store (Vercel, Netlify,
+   - Add the new keys to your hosting provider's secret store (Railway, Netlify,
      GitHub Actions Secrets, etc.). Do NOT store them in repository files.
-   - For Vercel: Project Settings → Environment Variables. For GitHub Actions:
+   - For Railway: Project Dashboard → Variables tab → Add variables. For GitHub Actions:
      Repository → Settings → Secrets and variables → Actions.
 
 1. Remove tracked env files from the repository (done / recommended)
@@ -93,7 +93,7 @@ Actions performed (branch: feature/forum-likes-e2e)
   non-sensitive placeholder values (they remain untracked).
 
 Next recommended actions: rotate the Supabase Service Role key immediately and
-update your hosting/CI secret stores (Vercel/GitHub Actions) with the newly
+update your hosting/CI secret stores (Railway/GitHub Actions) with the newly
 generated keys. If you want me to purge the secret from git history, say so
 and I will prepare a safe plan (this requires a force push and coordination).
 

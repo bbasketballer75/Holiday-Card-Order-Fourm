@@ -1,6 +1,6 @@
 # Friendly City Print Shop
 
-An interactive online forum and ordering system for holiday cards built with Next.js (App Router), TypeScript, Tailwind CSS, Supabase, and Stripe. This is a minimal prototype scaffold designed to be free-tier friendly (Supabase free tier + Vercel for deployment).
+An interactive online forum and ordering system for holiday cards built with Next.js (App Router), TypeScript, Tailwind CSS, Supabase, and Stripe. This is a minimal prototype scaffold designed to be free-tier friendly (Supabase free tier + Railway.app for deployment).
 
 ## Dev setup
 
@@ -45,7 +45,7 @@ npm run seed
 
 - **Supabase**: [Create a new project](https://supabase.com) for production
 - **Stripe**: [Create a new account](https://stripe.com) for payment processing
-- **Vercel**: [Sign up](https://vercel.com) for hosting (free tier available)
+- **Railway**: [Sign up](https://railway.app) for hosting (free tier with $5/month credits)
 
 ### Database Setup
 
@@ -69,7 +69,7 @@ STRIPE_PUBLISHABLE_KEY=pk_live_your_publishable_key
 STRIPE_SECRET_KEY=sk_live_your_secret_key
 
 # App Config
-NEXT_PUBLIC_BASE_URL=https://your-domain.vercel.app
+NEXT_PUBLIC_BASE_URL=https://your-app.railway.app
 PORT=3000
 ```
 
@@ -79,11 +79,19 @@ PORT=3000
 
 For order fulfillment automation, set up Stripe webhooks to listen for `checkout.session.completed` events.
 
-### Deploy to Vercel
+### Deploy to Railway
 
-1. Connect your GitHub repository to Vercel
-1. Add environment variables in Vercel dashboard
-1. Deploy!
+1. Sign in to [Railway.app](https://railway.app)
+1. Click **New Project** → **Deploy from GitHub repo**
+1. Select your GitHub repository
+1. Railway will auto-detect Next.js and configure the build
+1. Add environment variables in Railway dashboard (Variables tab):
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `STRIPE_PUBLISHABLE_KEY`
+   - `STRIPE_SECRET_KEY`
+1. Railway will auto-deploy on every GitHub push to `main`
 
 ## Testing Production Setup
 
