@@ -4,18 +4,25 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 
 export const metadata = {
-  title: 'Friendly City Print Shop',
-  description: 'Order holiday cards with Friendly City Print Shop',
-}
+  title: 'Friendly City Print Shop - Beautiful Holiday Cards',
+  description:
+    'Create and order personalized holiday cards with Friendly City Print Shop. Beautiful designs, quick ordering, and fast shipping.',
+};
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-white text-gray-800 min-h-screen flex flex-col">
+      <head>
+        <meta name="theme-color" content="#185c37" />
+      </head>
+      <body
+        className="min-h-screen flex flex-col"
+        style={{ backgroundColor: 'var(--holiday-cream)', color: 'var(--holiday-dark)' }}
+      >
         <Header />
-        <main className="container mx-auto px-4 py-8 flex-1">{children}</main>
+        <div className="flex-1">{children}</div>
         <Footer />
       </body>
     </html>
-  )
+  );
 }
