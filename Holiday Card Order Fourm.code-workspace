@@ -2,10 +2,13 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "C:/Users/bbask/Downloads/supabase_windows_amd64"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true,
+		"editor.codeActionsOnSave": {
+			"source.fixAll.eslint": "explicit"
+		}
+	}
 }
