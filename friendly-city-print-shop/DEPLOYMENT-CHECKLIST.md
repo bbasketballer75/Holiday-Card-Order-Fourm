@@ -2,10 +2,10 @@
 
 ## Pre-Deployment
 
-- [ ] Create Supabase production project
+- [x] Create Supabase production project
 - [ ] Create Stripe production account
-- [ ] **Set up Railway.app account** (see Railway Setup Guide below)
-- [ ] Run `npm run test-setup` and fix any issues
+- [x] **Set up Railway.app account** (see Railway Setup Guide below)
+- [x] Run `npm run test-setup` and fix any issues
 - [ ] Update domain in environment variables
 
 ## Railway Setup Guide
@@ -56,28 +56,28 @@ PORT=3000
 
 ## Database Setup
 
-- [ ] Execute `supabase-schema.sql` in Supabase SQL Editor
-- [ ] Run `npm run seed` to populate templates
-- [ ] Verify RLS policies are correct
+- [x] Execute `supabase-schema.sql` in Supabase SQL Editor
+- [x] Run `npm run seed` to populate templates
+- [x] Verify RLS policies are correct
 
 ## Environment Variables
 
-- [ ] Set all production env vars in Railway dashboard (Variables tab)
+- [x] Set all production env vars in Railway dashboard (Variables tab)
 - [ ] Test Stripe webhook endpoint (if implemented)
-- [ ] Verify Supabase connection
+- [x] Verify Supabase connection
 
 ## Testing
 
-- [ ] Test forum posting
-- [ ] Test template browsing
-- [ ] Test order checkout flow
-- [ ] Test responsive design on mobile
+- [x] Test forum posting
+- [x] Test template browsing
+- [x] Test order checkout flow
+- [x] Test responsive design on mobile
 
 ## Security
 
-- [ ] Ensure no sensitive data in client-side code
-- [ ] Verify HTTPS redirect
-- [ ] Check CORS settings
+- [x] Ensure no sensitive data in client-side code
+- [x] Verify HTTPS redirect
+- [x] Check CORS settings
 
 ## Performance
 
@@ -87,7 +87,7 @@ PORT=3000
 
 ## Go-Live
 
-- [ ] Connect GitHub repo to Railway (auto-deploys on push)
+- [x] Connect GitHub repo to Railway (auto-deploys on push)
 - [ ] Test live site functionality
 - [ ] Update DNS (if custom domain) to point to Railway
 - [ ] Monitor error logs in Railway dashboard
