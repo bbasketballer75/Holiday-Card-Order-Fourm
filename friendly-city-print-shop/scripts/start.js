@@ -3,7 +3,15 @@ const { spawn } = require('child_process');
 
 const port = process.env.PORT || 3000;
 const nodeExec = process.execPath || 'node';
-const nextBin = require('path').join(__dirname, '..', 'node_modules', 'next', 'dist', 'bin', 'next');
+const nextBin = require('path').join(
+  __dirname,
+  '..',
+  'node_modules',
+  'next',
+  'dist',
+  'bin',
+  'next',
+);
 
 const child = spawn(nodeExec, [nextBin, 'start', '-p', String(port)], {
   stdio: 'inherit',

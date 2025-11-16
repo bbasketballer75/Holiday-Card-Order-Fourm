@@ -34,59 +34,57 @@ working tree and added this guidance plus an `.env.example` placeholder file.
    ```
 
    Example (purge from history — use with caution):
-
    1. Using git-filter-repo (recommended over BFG):
 
-     ```sh
-     python -m pip install git-filter-repo
-     git clone --mirror <repo-url> repo-mirror.git
-     cd repo-mirror.git
-     git filter-repo --path friendly-city-print-shop/.env.local --invert-paths
-     git push --force
-     ```
+   ```sh
+   python -m pip install git-filter-repo
+   git clone --mirror <repo-url> repo-mirror.git
+   cd repo-mirror.git
+   git filter-repo --path friendly-city-print-shop/.env.local --invert-paths
+   git push --force
+   ```
 
-    1. Using BFG (alternative):
+   1. Using BFG (alternative):
 
-     ```sh
-     # read BFG docs first; this is an irreversible history rewrite
-     java -jar bfg.jar --delete-files .env.local
-     git reflog expire --expire=now --all
-     git gc --prune=now --aggressive
-     git push --force
-     ```
+   ```sh
+   # read BFG docs first; this is an irreversible history rewrite
+   java -jar bfg.jar --delete-files .env.local
+   git reflog expire --expire=now --all
+   git gc --prune=now --aggressive
+   git push --force
+   ```
 
 1. Verify and test
-
-    - After rotating keys and updating secrets in your hosting/CI, re-deploy the
-      app and run the test suite (including the Playwright E2E smoke tests) to
-      ensure server routes and integrations work correctly.
+   - After rotating keys and updating secrets in your hosting/CI, re-deploy the
+     app and run the test suite (including the Playwright E2E smoke tests) to
+     ensure server routes and integrations work correctly.
 
 1. Prevent recurrence
+   - Keep `.env.local` and other env files in `.gitignore` (this repository already
+     includes `.env.local` and `.env.*.local` in `.gitignore`). But note that
+     `.gitignore` does not affect files already tracked by git — you must remove
+     them as shown above.
 
-    - Keep `.env.local` and other env files in `.gitignore` (this repository already
-      includes `.env.local` and `.env.*.local` in `.gitignore`). But note that
-      `.gitignore` does not affect files already tracked by git — you must remove
-      them as shown above.
-
-    - Consider adding a pre-commit hook to block accidental commits of files that
-      contain secret-looking values (e.g., detect `SUPABASE_SERVICE_ROLE_KEY`).
+   - Consider adding a pre-commit hook to block accidental commits of files that
+     contain secret-looking values (e.g., detect `SUPABASE_SERVICE_ROLE_KEY`).
 
 If you'd like, I can:
 
 1. purge the secret from the repository history using `git filter-repo` or BFG
-  (I will NOT do this without your confirmation because it's a destructive
-  operation and requires coordination),
+   (I will NOT do this without your confirmation because it's a destructive
+   operation and requires coordination),
 
 1. update any CI configuration to ensure secrets are loaded from secure
-  environment variables,
+   environment variables,
 
 1. proceed to rotate keys and update hosting secrets if you provide access
-  method/confirmation.
+   method/confirmation.
 
 Please rotate the exposed Supabase keys now. I removed the tracked `.env.local`
 from the working tree in this change to help stop further accidental exposure.
 
 ---
+
 Actions performed (branch: feature/forum-likes-e2e)
 
 - Commit: c90856c — removed tracked `friendly-city-print-shop/.env.vercel` and
@@ -100,6 +98,7 @@ generated keys. If you want me to purge the secret from git history, say so
 and I will prepare a safe plan (this requires a force push and coordination).
 
 ---
+
 History purge performed (by request)
 
 I ran a history-rewrite to remove committed env files from the repository history
@@ -148,4 +147,4 @@ If you want, I can also:
 1. Create announcement text for your team explaining the re-clone step.
 
 1. Coordinate a maintenance window for the force-push and help collaborators
-  rebase or re-clone safely.
+   rebase or re-clone safely.

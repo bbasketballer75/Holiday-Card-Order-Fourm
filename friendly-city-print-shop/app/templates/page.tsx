@@ -1,5 +1,5 @@
-import TemplateCard from '../../components/TemplateCard'
-import { supabase } from '../../lib/supabaseClient'
+import TemplateCard from '../../components/TemplateCard';
+import { supabase } from '../../lib/supabaseClient';
 
 interface Template {
   id: string;
