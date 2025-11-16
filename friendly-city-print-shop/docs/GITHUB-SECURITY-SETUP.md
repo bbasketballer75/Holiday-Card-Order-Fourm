@@ -20,25 +20,25 @@ Go to the repository → Settings → Security & analysis (or Settings → Advan
 1. Dependency graph (Enable)
    - Keeps an up-to-date view of repository dependencies.
 
-2. Dependabot alerts (Enable)
+1. Dependabot alerts (Enable)
    - Notifies on vulnerable dependencies.
 
-3. Dependabot security updates (Enable)
+1. Dependabot security updates (Enable)
    - Automatically opens PRs to fix vulnerable dependencies. Useful for quick remediation.
 
-4. Dependabot version updates (Optional but recommended)
+1. Dependabot version updates (Optional but recommended)
    - Automatically create PRs for new dependency versions.
 
-5. Code scanning (CodeQL) (Enable)
+1. Code scanning (CodeQL) (Enable)
    - Click "Set up" for CodeQL analysis if prompts appear. We added a CodeQL workflow; enabling this here ensures results appear in Security tab.
 
-6. Secret scanning / Secret protection (Enable)
+1. Secret scanning / Secret protection (Enable)
    - If your GitHub plan supports it (GitHub Advanced Security), enable secret scanning and push protection to block secrets.
 
-7. Push protection (Enable)
+1. Push protection (Enable)
    - Blocks pushes that contain supported secrets.
 
-8. Private vulnerability reporting (Optional)
+1. Private vulnerability reporting (Optional)
    - Allow external security researchers to privately report vulnerabilities.
 
 Notes
@@ -49,9 +49,9 @@ Notes
 How to enable (quick steps)
 
 1. Open the repository on GitHub.
-2. Click `Settings` → `Security & analysis` (or `Advanced Security`).
-3. Toggle the following ON: Dependency graph, Dependabot alerts, Dependabot security updates, Code scanning (CodeQL), Secret scanning, Push protection.
-4. If any options are grayed out, confirm your account/organization has Advanced Security enabled, or contact your organization admin.
+1. Click `Settings` → `Security & analysis` (or `Advanced Security`).
+1. Toggle the following ON: Dependency graph, Dependabot alerts, Dependabot security updates, Code scanning (CodeQL), Secret scanning, Push protection.
+1. If any options are grayed out, confirm your account/organization has Advanced Security enabled, or contact your organization admin.
 
 After enabling
 

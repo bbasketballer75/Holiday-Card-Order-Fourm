@@ -1,3 +1,5 @@
+# Pull Request
+
 ## What changed
 
 Please include a concise description of what changed and why.
@@ -8,4 +10,4 @@ Please include a concise description of what changed and why.
 - [ ] If this PR affects E2E behavior, confirm `npm run test:e2e` passes locally.
 - [ ] Ensure `scripts/gen-docs.js` generated docs are included if changed.
 
-*** End Patch
+<!-- PR template end -->
