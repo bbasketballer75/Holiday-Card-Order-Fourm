@@ -1,7 +1,7 @@
-import './globals.css'
-import type { ReactNode } from 'react'
-import Header from '../components/Header'
-import Footer from '../components/Footer'
+import './globals.css';
+import type { ReactNode } from 'react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 export const metadata = {
   title: 'Friendly City Print Shop - Beautiful Holiday Cards',
