@@ -51,7 +51,9 @@ jobs:
           supabase --version || true
           # Start Supabase CLI in the background; use debug for additional logs
           supabase start --debug &
-          npx wait-on http://localhost:54321 --timeout 180000
+          # Wait for the Supabase API to become responsive. Use 127.0.0.1 to avoid
+          # any potential host->localhost DNS resolution differences on the runner.
+          npx wait-on http://127.0.0.1:54321 --timeout 360000
 
       - name: Extract Supabase envs for local dev
         if: ${{ github.event_name == 'pull_request' || github.event.inputs.ephemeral == 'true' }}
