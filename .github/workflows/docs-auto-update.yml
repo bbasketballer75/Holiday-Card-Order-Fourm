@@ -1,0 +1,33 @@
+name: Auto Update Docs
+
+on:
+  push:
+    branches: [ master, main ]
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: friendly-city-print-shop
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm ci
+      - name: Generate docs
+        run: npm run docs:generate
+      - name: Create PR if docs changed
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore(docs): update generated docs'
+          branch: 'auto/docs-update-${{ github.sha }}'
+          title: 'chore: update generated docs'
+          body: 'Auto-generated documentation updates.'
+          labels: 'chore, docs'

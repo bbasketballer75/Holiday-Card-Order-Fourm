@@ -1,0 +1,12 @@
+{
+  "agentName": "Project AI Assistant",
+  "autoUpdateDocs": true,
+  "allowSetSecrets": false,
+  "allowedTasks": [
+    "generate-docs",
+    "run-e2e",
+    "prepare-ci",
+    "rotate-keys"
+  ],
+  "notes": "This configuration is for agents/scripts that act on this repo. It does NOT include secrets or tokens. To set secrets, use provided scripts with gh CLI or run commands manually."
+}
