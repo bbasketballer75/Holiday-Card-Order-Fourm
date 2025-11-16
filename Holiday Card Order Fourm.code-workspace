@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "C:/Users/bbask/Downloads/supabase_windows_amd64"
 		}
 	],
 	"settings": {}
