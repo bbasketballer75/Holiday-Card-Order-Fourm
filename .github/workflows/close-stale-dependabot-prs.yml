@@ -1,0 +1,38 @@
+name: Close Stale Dependabot PRs
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  close-stale-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close stale Dependabot PRs
+        uses: actions/stale@v9
+        with:
+          # Only process PRs
+          any-of-labels: 'deps'
+          # Consider PRs stale after 7 days of inactivity
+          days-before-stale: 7
+          # Close stale PRs after 3 more days (10 total days)
+          days-before-close: 3
+          # Comment on stale PRs
+          stale-pr-label: 'stale'
+          stale-pr-message: |
+            This pull request has been automatically marked as stale because it has not had recent activity. It will be closed in 3 days if no further activity occurs.
+
+            If you'd like to keep this PR open, please add a comment or push a commit. Otherwise, it will be automatically closed.
+          # Comment when closing
+          close-pr-message: |
+            This pull request has been automatically closed due to inactivity. If you still need these dependency updates, please reopen the PR or create a new one.
+          # Don't mark as stale if these labels are present
+          exempt-pr-labels: 'pinned,security'
+          # Operations per run
+          operations-per-run: 30
