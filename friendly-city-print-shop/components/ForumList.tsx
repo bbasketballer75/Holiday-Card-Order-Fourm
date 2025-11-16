@@ -14,13 +14,16 @@ type ForumItem = {
 export default function ForumList({
   items,
   onReply,
+  onLike,
 }: {
   items: ForumItem[]
   onReply?: Function
+  onLike?: Function
 }) {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [liked, setLiked] = useState<Set<string>>(new Set());
+  const [pendingLikes, setPendingLikes] = useState<Set<string>>(new Set());
 
   const submitReply = async (user: string) => {
     if (!replyText.trim()) return;
@@ -124,13 +127,39 @@ export default function ForumList({
               className="text-holiday-gold hover:text-holiday-red transition-colors text-sm font-semibold"
               aria-label={`${liked.has(it.id) ? 'Unlike' : 'Like'} message by ${it.user}`}
               aria-pressed={liked.has(it.id)}
-              onClick={() => {
+              disabled={pendingLikes.has(it.id)}
+              onClick={async () => {
+                const currentlyLiked = liked.has(it.id);
+                // optimistic local toggle
                 setLiked((prev) => {
                   const next = new Set(prev);
                   if (next.has(it.id)) next.delete(it.id);
                   else next.add(it.id);
                   return next;
                 });
+
+                // mark pending
+                setPendingLikes((prev) => new Set(prev).add(it.id));
+
+                try {
+                  if (onLike) {
+                    await onLike(it.id, currentlyLiked ? 'unlike' : 'like');
+                  }
+                } catch (err) {
+                  // revert on error
+                  setLiked((prev) => {
+                    const next = new Set(prev);
+                    if (currentlyLiked) next.add(it.id);
+                    else next.delete(it.id);
+                    return next;
+                  });
+                } finally {
+                  setPendingLikes((prev) => {
+                    const next = new Set(prev);
+                    next.delete(it.id);
+                    return next;
+                  });
+                }
               }}
             >
               {liked.has(it.id) ? '💚 Liked' : '❤️ Like'}

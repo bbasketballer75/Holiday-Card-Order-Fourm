@@ -83,6 +83,24 @@ export default function ForumApp() {
     await handleAdd(text);
   };
 
+  const handleLike = async (messageId: string, action: 'like' | 'unlike') => {
+    try {
+      const resp = await fetch('/api/forum/like', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messageId, action, userName: 'Visitor' }),
+      })
+      if (!resp.ok) {
+        const txt = await resp.text()
+        throw new Error(txt || 'Like API error')
+      }
+      // refresh messages to reflect counts/state
+      await fetchMessages()
+    } catch (err) {
+      console.error('Like API error', err)
+    }
+  }
+
   const loadMore = () => setVisibleCount((v) => v + 10);
 
   if (loading)
@@ -97,7 +115,7 @@ export default function ForumApp() {
       <ForumInput onAdd={handleAdd} />
       {/* Announce new messages for screen readers */}
       <div aria-live="polite" className="sr-only">{announcement}</div>
-      <ForumList items={items.slice(0, visibleCount)} onReply={handleReply} />
+      <ForumList items={items.slice(0, visibleCount)} onReply={handleReply} onLike={handleLike} />
       {items.length > visibleCount && (
         <div className="text-center mt-6">
           <button onClick={loadMore} className="btn-holiday-secondary">
