@@ -11,6 +11,9 @@
     "seed": "node ./scripts/seed.js",
     "test-setup": "node ./scripts/test-setup.js",
     "setup": "npm ci && npm run lint || true",
+    "setup-dev-windows": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/setup-dev-tools.ps1",
+    "setup-dev-unix": "sh ./scripts/setup-dev-tools.sh",
+    "setup-dev": "npm run setup-dev-unix || npm run setup-dev-windows",
     "prepare": "node ../scripts/install-husky.js",
     "install-hooks": "git config core.hooksPath .githooks",
     "secret-check": "node ./scripts/check-secrets.js",
@@ -20,8 +23,10 @@
     "rotate-keys": "../scripts/rotate-supabase-keys.sh",
     "e2e:seed": "node ./scripts/e2e-setup.js",
     "e2e:cleanup": "node ./scripts/e2e-cleanup.js",
-    "e2e:run-prod": "npm run e2e:seed && npm run build && start-server-and-test 'npm run start' http://localhost:3000 'npm run test:e2e:ci' && npm run e2e:cleanup || npm run e2e:cleanup",
-    "test:e2e": "playwright test",
+    "e2e:run-prod": "npm run e2e:seed && npm run build && node ./scripts/e2e-run-prod.js",
+    "clean:win": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/clean-win.ps1",
+    "setup-powershell": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/setup-powershell-env.ps1",
+    "test:e2e": "node node_modules/@playwright/test/cli.js test --reporter=html",
     "test:e2e:ci": "cross-env PW_NO_WEB_SERVER=true npm run test:e2e"
   },
   "dependencies": {
@@ -41,11 +46,15 @@
     "eslint": "^8.44.0",
     "eslint-config-next": "^14.0.0",
     "postcss": "^8.4.21",
-    "prettier": "^2.8.8",
+    "prettier": "^3.6.2",
     "tailwindcss": "^3.4.0",
     "husky": "^8.0.0",
     "typescript": "^5.2.2",
     "wait-on": "^7.0.1",
     "start-server-and-test": "^1.14.0"
+  },
+  "overrides": {
+    "rimraf": "4.4.1",
+    "glob": "9.3.1"
   }
 }

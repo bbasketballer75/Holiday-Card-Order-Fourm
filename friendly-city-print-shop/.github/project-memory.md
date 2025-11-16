@@ -17,7 +17,7 @@ Dev Preferences:
 
 Cost Control:
 
-- Keep the project free-friendly: Supabase free tier, Vercel for hosting, and Stripe test keys for payments during development.
+- Keep the project free-friendly: Supabase free tier, Railway.app for hosting, and Stripe test keys for payments during development.
 
 Testing & CI:
 

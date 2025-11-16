@@ -1,4 +1,4 @@
-import ForumApp from '../../components/ForumApp'
+import ForumApp from '../../components/ForumApp';
 
 export default function ForumPage() {
   return (

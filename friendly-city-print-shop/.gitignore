@@ -6,3 +6,6 @@ node_modules
 .vscode
 dist
 tmp
+playwright-report
+playwright-report.zip
+test-results

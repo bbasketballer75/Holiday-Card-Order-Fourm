@@ -2,12 +2,20 @@
 const { spawn } = require('child_process');
 
 const port = process.env.PORT || 3000;
-const isWin = /^win/.test(process.platform);
-const npxCmd = isWin ? 'npx.cmd' : 'npx';
+const nodeExec = process.execPath || 'node';
+const nextBin = require('path').join(
+  __dirname,
+  '..',
+  'node_modules',
+  'next',
+  'dist',
+  'bin',
+  'next',
+);
 
-const child = spawn(npxCmd, ['next', 'start', '-p', String(port)], {
+const child = spawn(nodeExec, [nextBin, 'start', '-p', String(port)], {
   stdio: 'inherit',
-  shell: true,
+  shell: false,
 });
 
 child.on('close', (code) => process.exit(code));

@@ -4,7 +4,7 @@
 
 - [ ] Create Supabase production project
 - [ ] Create Stripe production account
-- [ ] Set up Vercel account
+- [ ] Set up Railway.app account
 - [ ] Run `npm run test-setup` and fix any issues
 - [ ] Update domain in environment variables
 
@@ -16,7 +16,7 @@
 
 ## Environment Variables
 
-- [ ] Set all production env vars in Vercel
+- [ ] Set all production env vars in Railway dashboard (Variables tab)
 - [ ] Test Stripe webhook endpoint (if implemented)
 - [ ] Verify Supabase connection
 
@@ -41,7 +41,7 @@
 
 ## Go-Live
 
-- [ ] Deploy to Vercel
+- [ ] Connect GitHub repo to Railway (auto-deploys on push)
 - [ ] Test live site functionality
-- [ ] Update DNS (if custom domain)
-- [ ] Monitor error logs
+- [ ] Update DNS (if custom domain) to point to Railway
+- [ ] Monitor error logs in Railway dashboard

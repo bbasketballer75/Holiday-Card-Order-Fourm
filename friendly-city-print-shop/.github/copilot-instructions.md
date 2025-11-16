@@ -1,8 +1,7 @@
 - [ ] Verify that the copilot-instructions.md file in the .github directory is created.
- - [x] Project memory created: .github/project-memory.md
+- [x] Project memory created: .github/project-memory.md
 
 - [ ] Clarify Project Requirements
-	
 - [ ] Scaffold the Project
 
 - [ ] Customize the Project
