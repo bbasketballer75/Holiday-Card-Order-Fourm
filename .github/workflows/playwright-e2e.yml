@@ -112,12 +112,37 @@ jobs:
       - name: Run Playwright tests
         run: npm run test:e2e:ci
 
+      - name: Debug Playwright report presence
+        if: always()
+        run: |
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          echo "Listing repository root"
+          ls -la $GITHUB_WORKSPACE || true
+          echo "Listing friendly-city-print-shop"
+          ls -la $GITHUB_WORKSPACE/friendly-city-print-shop || true
+          echo "Listing playwright report folder"
+          ls -la $GITHUB_WORKSPACE/friendly-city-print-shop/playwright-report || true
+
+      - name: Compress Playwright HTML report (if present)
+        if: always()
+        run: |
+          if [[ -d "$GITHUB_WORKSPACE/friendly-city-print-shop/playwright-report" ]]; then
+            cd $GITHUB_WORKSPACE/friendly-city-print-shop
+            # Use tar.gz for better portability across Linux runners
+            tar -czf playwright-report.tar.gz playwright-report || true
+          else
+            echo "No playwright-report folder to compress"
+          fi
+        shell: bash
+
       - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: friendly-city-print-shop/playwright-report
+          path: |
+            friendly-city-print-shop/playwright-report/**
+            friendly-city-print-shop/playwright-report.tar.gz
 
       - name: E2E cleanup (always)
         if: always()
