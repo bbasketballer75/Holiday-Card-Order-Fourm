@@ -11,6 +11,8 @@
     "seed": "node ./scripts/seed.js",
     "test-setup": "node ./scripts/test-setup.js",
     "setup": "npm ci && npm run lint || true",
+    "install-hooks": "git config core.hooksPath .githooks",
+    "secret-check": "node ./scripts/check-secrets.js",
     "e2e:install": "npx playwright install",
     "test:e2e": "playwright test"
   },

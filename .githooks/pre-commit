@@ -1,0 +1,13 @@
+#!/bin/sh
+# Pre-commit hook: run the Node secret check script
+if command -v node >/dev/null 2>&1; then
+  node ./scripts/check-secrets.js
+  status=$?
+  if [ $status -ne 0 ]; then
+    echo "\nCommit aborted by pre-commit hook: secret patterns detected."
+    exit $status
+  fi
+else
+  echo "Node.js not found; skipping secret check. Install Node.js to enable pre-commit secret scanning."
+fi
+exit 0
