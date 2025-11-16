@@ -47,9 +47,11 @@ jobs:
       - name: Start ephemeral Supabase (local) for PRs or if requested
         if: ${{ github.event_name == 'pull_request' || github.event.inputs.ephemeral == 'true' }}
         run: |
-          # Start Supabase CLI in the background; avoid flags that may be unsupported across versions
-          supabase start &
-          npx wait-on http://localhost:54321 --timeout 120000
+          # Debugging: print supabase version
+          supabase --version || true
+          # Start Supabase CLI in the background; use debug for additional logs
+          supabase start --debug &
+          npx wait-on http://localhost:54321 --timeout 180000
 
       - name: Extract Supabase envs for local dev
         if: ${{ github.event_name == 'pull_request' || github.event.inputs.ephemeral == 'true' }}
