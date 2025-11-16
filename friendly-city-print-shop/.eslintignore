@@ -1,0 +1,2 @@
+# Ignore standalone scripts that don't need Next.js babel processing
+scripts/

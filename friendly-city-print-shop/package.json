@@ -1,0 +1,33 @@
+{
+  "name": "friendly-city-print-shop",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node ./scripts/dev.js",
+    "build": "next build",
+    "start": "node ./scripts/dev.js --production",
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "seed": "node ./scripts/seed.js",
+    "test-setup": "node ./scripts/test-setup.js",
+    "setup": "npm ci && npm run lint || true"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.32.1",
+    "next": "14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "stripe": "^12.10.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.5",
+    "autoprefixer": "^10.4.14",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.44.0",
+    "eslint-config-next": "^14.0.0",
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.8",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.2.2"
+  }
+}
