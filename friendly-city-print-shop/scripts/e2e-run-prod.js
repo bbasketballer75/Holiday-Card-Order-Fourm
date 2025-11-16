@@ -90,8 +90,13 @@ async function main() {
 
     try {
       // Run Playwright tests via package: avoid spawning npx to reduce powershell issues
-      // Use the Playwright CLI entry point
-      await runScript('node', [path.join('node_modules', '@playwright', 'test', 'cli.js'), 'test']);
+      // Use the Playwright CLI entry point, explicitly request an HTML reporter to ensure
+      // the CI runner consistently generates the playwright-report folder.
+      await runScript('node', [
+        path.join('node_modules', '@playwright', 'test', 'cli.js'),
+        'test',
+        '--reporter=html',
+      ]);
     } catch (err) {
       console.error('E2E tests failed:', err.message);
       await cleanup();
