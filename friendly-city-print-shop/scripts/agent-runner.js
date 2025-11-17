@@ -68,23 +68,7 @@ async function main() {
     }
 
     const git = simpleGit(root)
-    let ownerRepo = await getOwnerRepoFromGitRemotes(git)
-    console.log('Git detection root:', root)
-    try {
-        const remotes = await git.getRemotes(true)
-        console.log('Git remotes detected:', remotes.map(r => r.name + ':' + r.refs.fetch).join(', '))
-    } catch (e) {
-        console.warn('Unable to list git remotes:', e.message)
-    }
-    // Fallback: use GITHUB_REPOSITORY if available (owner/repo)
-    if (!ownerRepo && process.env.GITHUB_REPOSITORY) {
-        const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
-        if (owner && repo) ownerRepo = { owner, repo }
-    }
-    if (!ownerRepo) {
-        if (process.env.GITHUB_REPOSITORY) console.log('GITHUB_REPOSITORY present but failed to parse: ', process.env.GITHUB_REPOSITORY)
-        else console.log('GITHUB_REPOSITORY env var is not present in environment')
-    }
+    const ownerRepo = await getOwnerRepoFromGitRemotes(git)
     if (!ownerRepo) {
         console.error('Unable to determine GitHub owner/repo from git remotes. Please set GITHUB_REPOSITORY env or ensure your git remotes are configured.')
         process.exit(1)
@@ -118,12 +102,8 @@ async function main() {
         try {
             const child_process = require('child_process')
             const scriptPath = path.resolve(root, '..', 'scripts', 'add-secret-to-env.js')
-            // Persist the .env.local in the package subfolder if it exists
-            const envPathForScript = fs.existsSync(path.resolve(root, 'friendly-city-print-shop'))
-                ? path.resolve(root, 'friendly-city-print-shop', '.env.local')
-                : path.resolve(root, '.env.local')
             const envPathForScript = path.resolve(root, '.env.local')
-            const cmdArgs = secretsArgs.concat(['--gh', `--repo=${repoSpec}`, `--path=${envPathForScript}`, `--path=${envPathForScript}`])
+            const cmdArgs = secretsArgs.concat(['--gh', `--repo=${repoSpec}`, `--path=${envPathForScript}`])
             child_process.execFileSync('node', [scriptPath, ...cmdArgs], { stdio: 'inherit' })
         } catch (err) {
             console.error('Failed to add secrets to .env.local via helper:', err.message)
