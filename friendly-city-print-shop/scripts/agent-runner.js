@@ -14,12 +14,13 @@ const simpleGit = require('simple-git')
 const yaml = require('yaml')
 
 function parseArgs(argv) {
-    const args = { apply: false, base: 'master', title: '', body: '' }
+    const args = { apply: false, base: 'master', title: '', body: '', addSecrets: [] }
     argv.slice(2).forEach((arg, idx, arr) => {
         if (arg === '--apply') args.apply = true
         if (arg === '--base' && arr[idx + 1]) args.base = arr[idx + 1]
         if (arg === '--title' && arr[idx + 1]) args.title = arr[idx + 1]
         if (arg === '--body' && arr[idx + 1]) args.body = arr[idx + 1]
+        if (arg === '--add-secret' && arr[idx + 1]) args.addSecrets.push(arr[idx + 1])
     })
     return args
 }
@@ -43,7 +44,17 @@ async function getOwnerRepoFromGitRemotes(git) {
 
 async function main() {
     const args = parseArgs(process.argv)
-    const root = path.resolve(process.cwd())
+    // Try to find the git repository root (walk up until a .git directory is found)
+    function findGitRoot(startDir) {
+        let cur = path.resolve(startDir)
+        while (true) {
+            if (fs.existsSync(path.join(cur, '.git'))) return cur
+            const parent = path.dirname(cur)
+            if (parent === cur) return null
+            cur = parent
+        }
+    }
+    const root = findGitRoot(process.cwd()) || path.resolve(process.cwd())
     const configPath = path.join(root, '.agentconfig.yml')
     let config = null
     if (fs.existsSync(configPath)) {
@@ -57,10 +68,32 @@ async function main() {
     }
 
     const git = simpleGit(root)
-    const ownerRepo = await getOwnerRepoFromGitRemotes(git)
+    let ownerRepo = await getOwnerRepoFromGitRemotes(git)
+    console.log('Git detection root:', root)
+    try {
+        const remotes = await git.getRemotes(true)
+        console.log('Git remotes detected:', remotes.map(r => r.name + ':' + r.refs.fetch).join(', '))
+    } catch (e) {
+        console.warn('Unable to list git remotes:', e.message)
+    }
+    // Fallback: use GITHUB_REPOSITORY if available (owner/repo)
+    if (!ownerRepo && process.env.GITHUB_REPOSITORY) {
+        const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
+        if (owner && repo) ownerRepo = { owner, repo }
+    }
     if (!ownerRepo) {
-        console.error('Unable to determine GitHub owner/repo from git remotes.')
+        if (process.env.GITHUB_REPOSITORY) console.log('GITHUB_REPOSITORY present but failed to parse: ', process.env.GITHUB_REPOSITORY)
+        else console.log('GITHUB_REPOSITORY env var is not present in environment')
+    }
+    if (!ownerRepo) {
+        console.error('Unable to determine GitHub owner/repo from git remotes. Please set GITHUB_REPOSITORY env or ensure your git remotes are configured.')
         process.exit(1)
+    }
+
+    // If secrets were provided via chat in env var, parse and add
+    if (process.env.AGENT_CHAT_SECRETS) {
+        const chatSecrets = process.env.AGENT_CHAT_SECRETS.split(';').filter(Boolean)
+        args.addSecrets = (args.addSecrets || []).concat(chatSecrets)
     }
 
     const status = await git.status()
@@ -75,6 +108,26 @@ async function main() {
     await git.add('./*')
     const commitMsg = `agent: automated update (${new Date().toISOString()})`
     await git.commit(commitMsg)
+
+    // If secrets were passed, persist them to .env.local and optionally GitHub secrets
+    if (args.addSecrets && args.addSecrets.length) {
+        console.log('Agent-runner detected secret additions; writing to .env.local (values redacted)')
+        const secretsArgs = args.addSecrets.flatMap((s) => [s])
+        const repoSpec = `${ownerRepo.owner}/${ownerRepo.repo}`
+        // Execute helper script: node ../../scripts/add-secret-to-env.js KEY=VALUE --gh --repo owner/repo
+        try {
+            const child_process = require('child_process')
+            const scriptPath = path.resolve(root, '..', 'scripts', 'add-secret-to-env.js')
+            // Persist the .env.local in the package subfolder if it exists
+            const envPathForScript = fs.existsSync(path.resolve(root, 'friendly-city-print-shop'))
+                ? path.resolve(root, 'friendly-city-print-shop', '.env.local')
+                : path.resolve(root, '.env.local')
+            const cmdArgs = secretsArgs.concat(['--gh', `--repo=${repoSpec}`, `--path=${envPathForScript}`])
+            child_process.execFileSync('node', [scriptPath, ...cmdArgs], { stdio: 'inherit' })
+        } catch (err) {
+            console.error('Failed to add secrets to .env.local via helper:', err.message)
+        }
+    }
 
     const dryRun = args.apply ? false : true
     if (dryRun) {

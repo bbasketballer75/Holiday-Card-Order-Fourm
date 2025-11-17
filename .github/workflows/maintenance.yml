@@ -1,0 +1,25 @@
+name: Maintenance - GitHub Health Check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 * * *'  # daily at 05:00 UTC
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Run health check
+        run: |
+          npm --prefix friendly-city-print-shop ci
+          node ./scripts/github-health-check.js
+      - name: Upload health artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: repo-health-check
+          path: artifacts/github-health-check.md

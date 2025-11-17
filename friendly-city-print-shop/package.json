@@ -9,6 +9,7 @@
     "start": "node ./scripts/start.js",
     "lint": "eslint --ext .ts,.tsx,.js,.jsx --max-warnings=0 .",
     "format": "prettier --write .",
+    "lighthouse:audit": "node ./scripts/lighthouse-ci.js",
     "seed": "node ./scripts/seed.js",
     "test-setup": "node ./scripts/test-setup.js",
     "setup": "npm ci && npm run lint || true",
@@ -29,7 +30,9 @@
     "setup-powershell": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/setup-powershell-env.ps1",
     "test:e2e": "node node_modules/@playwright/test/cli.js test --reporter=html",
     "test:e2e:ci": "cross-env PW_NO_WEB_SERVER=true npm run test:e2e",
-    "deploy:prod": "bash ../scripts/deploy-prod.sh"
+    "deploy:prod": "bash ../scripts/deploy-prod.sh",
+    "add-secret": "node ../scripts/add-secret-to-env.js",
+    "check:gh-health": "node ../scripts/github-health-check.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.32.1",

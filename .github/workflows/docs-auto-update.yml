@@ -6,6 +6,9 @@ on:
 
 jobs:
   update-docs:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -25,7 +28,7 @@ jobs:
       - name: Create PR if docs changed
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.REPO_WRITE_TOKEN != '' && secrets.REPO_WRITE_TOKEN || secrets.GITHUB_TOKEN }}
           commit-message: 'chore(docs): update generated docs'
           branch: 'auto/docs-update-${{ github.sha }}'
           title: 'chore: update generated docs'
