@@ -27,6 +27,9 @@ logs/
 test-results/
 coverage/
 
+# TypeScript incremental build info
+*.tsbuildinfo
+
 # Build artifacts
 build/
 
