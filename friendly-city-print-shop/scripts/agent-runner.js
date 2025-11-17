@@ -44,7 +44,17 @@ async function getOwnerRepoFromGitRemotes(git) {
 
 async function main() {
     const args = parseArgs(process.argv)
-    const root = path.resolve(process.cwd())
+    // Try to find the git repository root (walk up until a .git directory is found)
+    function findGitRoot(startDir) {
+        let cur = path.resolve(startDir)
+        while (true) {
+            if (fs.existsSync(path.join(cur, '.git'))) return cur
+            const parent = path.dirname(cur)
+            if (parent === cur) return null
+            cur = parent
+        }
+    }
+    const root = findGitRoot(process.cwd()) || path.resolve(process.cwd())
     const configPath = path.join(root, '.agentconfig.yml')
     let config = null
     if (fs.existsSync(configPath)) {
@@ -58,9 +68,14 @@ async function main() {
     }
 
     const git = simpleGit(root)
-    const ownerRepo = await getOwnerRepoFromGitRemotes(git)
+    let ownerRepo = await getOwnerRepoFromGitRemotes(git)
+    // Fallback: use GITHUB_REPOSITORY if available (owner/repo)
+    if (!ownerRepo && process.env.GITHUB_REPOSITORY) {
+        const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
+        if (owner && repo) ownerRepo = { owner, repo }
+    }
     if (!ownerRepo) {
-        console.error('Unable to determine GitHub owner/repo from git remotes.')
+        console.error('Unable to determine GitHub owner/repo from git remotes. Please set GITHUB_REPOSITORY env or ensure your git remotes are configured.')
         process.exit(1)
     }
 
@@ -92,7 +107,10 @@ async function main() {
         try {
             const child_process = require('child_process')
             const scriptPath = path.resolve(root, '..', 'scripts', 'add-secret-to-env.js')
-            const envPathForScript = path.resolve(root, '.env.local')
+            // Persist the .env.local in the package subfolder if it exists
+            const envPathForScript = fs.existsSync(path.resolve(root, 'friendly-city-print-shop'))
+                ? path.resolve(root, 'friendly-city-print-shop', '.env.local')
+                : path.resolve(root, '.env.local')
             const cmdArgs = secretsArgs.concat(['--gh', `--repo=${repoSpec}`, `--path=${envPathForScript}`])
             child_process.execFileSync('node', [scriptPath, ...cmdArgs], { stdio: 'inherit' })
         } catch (err) {

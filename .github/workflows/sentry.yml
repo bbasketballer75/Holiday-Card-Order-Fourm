@@ -7,8 +7,19 @@ on:
   workflow_dispatch:
 jobs:
   sentry:
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+    if: ${{ env.SENTRY_AUTH_TOKEN != '' && env.SENTRY_ORG != '' && env.SENTRY_PROJECT != '' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Check if Sentry secrets are set
+        run: |
+          if [ -z "${{ secrets.SENTRY_AUTH_TOKEN }}" ] || [ -z "${{ secrets.SENTRY_ORG }}" ] || [ -z "${{ secrets.SENTRY_PROJECT }}" ]; then
+            echo "Sentry secrets not configured - skipping Sentry steps."
+            exit 0
+          fi
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Install dependencies

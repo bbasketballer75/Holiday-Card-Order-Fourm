@@ -7,6 +7,10 @@ Welcome to the Holiday Card Order Form project! This guide walks you through set
 - **Node.js** (v18+) and npm
 - **Git** with GitHub CLI (`gh`) for PR management
 - **Supabase CLI** (v2.59+) for local dev and migrations
+- **Railway CLI** for deployment debugging and remote logs (`railway --version`)
+- **Stripe CLI** for checkout/webhook testing (`stripe version`)
+- **Sentry CLI** for release health / source map uploads (`sentry-cli --version`)
+- **Lighthouse CLI** (installed as a project devDependency) for performance audits
 - **PowerShell 7+** (recommended for cross-platform shell consistency)
 - **Windows users**: Visual Studio Code Insiders with recommended extensions
 
@@ -75,6 +79,36 @@ The Supabase CLI is required for seeding and migrations and must be manually ins
 
 **Note**: `npm install -g supabase` is no longer supported; use the manual binary installation above.
 
+### Additional CLI Tooling
+
+These CLIs were installed during the November 2025 cleanup and are now required for parity with CI and deployment tooling. Install them once, then re-run the verification commands when upgrading.
+
+#### Railway CLI
+
+- **Why**: Needed to inspect Railway environments, tail logs, and trigger redeploys from the terminal.
+- **Windows install**: `npm install -g @railway/cli`
+- **macOS/Linux install**: `brew install railway` or `npm install -g @railway/cli`
+- **Verify**: `railway --version`
+
+#### Stripe CLI
+
+- **Why**: Enables local webhook forwarding and checkout session debugging.
+- **Windows install**: `winget install Stripe.StripeCLI` (or download from Stripe releases)
+- **macOS/Linux install**: `brew install stripe/stripe-cli/stripe`
+- **Verify**: `stripe version`
+
+#### Sentry CLI
+
+- **Why**: Required for uploading source maps, releases, and issue triage automation.
+- **Install**: Download the latest binary from [Sentry CLI releases](https://github.com/getsentry/sentry-cli/releases) and add it to your `%PATH%`, or run `npm install -g @sentry/cli`.
+- **Verify**: `sentry-cli --version`
+
+#### Lighthouse CLI
+
+- **Why**: Powers the automated Lighthouse regression script (`npm run lighthouse:audit`).
+- **Install**: Included via the `lighthouse` devDependency; run `npm install` to pull it locally.
+- **Verify**: `npx lighthouse --version` (after running `npm install`).
+
 ## Development Commands
 
 ### Local Development
@@ -106,6 +140,14 @@ Run the full CI-like workflow locally (seed → build → test → cleanup):
 ```bash
 npm run e2e:run-prod
 ```
+
+Generate a Lighthouse performance report (build → start → audit → cleanup):
+
+```bash
+npm run lighthouse:audit
+```
+
+Reports are saved in `test-results/lighthouse` with both `.report.html` and `.report.json` files. Customize the audit with `LIGHTHOUSE_URL`, `LIGHTHOUSE_PORT`, or `LIGHTHOUSE_PRESET` if you need to target a different host or profile.
 
 ### Linting & Formatting
 

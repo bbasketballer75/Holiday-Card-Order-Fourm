@@ -165,3 +165,12 @@ Example to set secrets using `gh` (local machine):
 ```
 
 See `docs/CI-E2E.md` for details and recommended practices.
+
+## Lighthouse performance audits
+
+- Run `npm run lighthouse:audit` to build the app, start the production server, and capture Lighthouse scores using the local CLI.
+- Reports are written to `test-results/lighthouse` (`.report.json` + `.report.html` per run) so they can be attached as CI artifacts.
+- Customize behavior with env vars:
+  - `LIGHTHOUSE_URL` (defaults to `http://127.0.0.1:${PORT}`)
+  - `LIGHTHOUSE_PORT` (falls back to `PORT` or `3000`)
+  - `LIGHTHOUSE_PRESET` (`desktop` by default)
