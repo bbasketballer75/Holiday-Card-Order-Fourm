@@ -96,7 +96,15 @@ async function main() {
     const { owner, repo } = ownerRepo
     const title = args.title || `AUTO: ${commitMsg}`
     const body = args.body || `Automated PR by agent (agent: ${agentMode}). See branch ${branchName} for details.`
-    const pr = await octokit.pulls.create({ owner, repo, title, head: branchName, base: args.base, body })
+    // Determine PR size and whether to create a Draft based on config
+    const allowLargePRs = Boolean(config && config.agent && config.agent.allowLargePRs)
+    const allowedPRSize = (config && config.agent && config.agent.allowedPRSize) || 200
+    const changedFilesCount = status.files.length || 0
+    const shouldDraft = (!allowLargePRs && changedFilesCount > allowedPRSize)
+    const pr = await octokit.pulls.create({ owner, repo, title, head: branchName, base: args.base, body, draft: shouldDraft })
+    if (shouldDraft) {
+        console.log('Large PR created as Draft because it exceeded allowedPRSize:', changedFilesCount)
+    }
     console.log('Created PR:', pr.data.html_url)
 
     // Auto-merge if allowed by config
@@ -120,10 +128,52 @@ async function main() {
                 merged = true
                 break
             }
+            // Optional: secret rotation before or after PR creation, depending on config
+            const allowSecretRotation = Boolean(config && config.agent && config.agent.allowSecretRotation)
+            if (allowSecretRotation) {
+                const trustedListStr = process.env.AGENT_TRUSTED || ''
+                const isTrusted = Array.from(trustedListStr.split(',')).some(Boolean)
+                if (!isTrusted) {
+                    console.warn('AllowSecretRotation is true but AGENT_TRUSTED is not set; skipping secret rotation.')
+                } else {
+                    console.log('Secret rotation enabled and AGENT_TRUSTED is set. Running rotate script...')
+                    try {
+                        const child_process = require('child_process')
+                        child_process.execSync('bash ../scripts/rotate-supabase-keys.sh', { stdio: 'inherit', cwd: path.resolve(root) })
+                        console.log('Secret rotation script executed (placeholder).')
+                    } catch (err) {
+                        console.error('Secret rotation script failed or is not configured properly:', err.message)
+                    }
+                }
+            }
             console.log('PR not mergeable yet. Attempt', attempt)
             await new Promise((r) => setTimeout(r, 30000)) // wait 30s
         }
         if (!merged) console.log('Auto-merge attempts exhausted; leaving PR open for manual review')
+    }
+    // Post-merge: optional production deploy if configured and merge succeeded
+    const allowProductionDeploy = Boolean(config && config.agent && config.agent.allowProductionDeploy)
+    if (allowProductionDeploy) {
+        // Very small safety: only trigger deploy if we merged automatically or the PR is merged by human and we have RAILWAY_API_KEY
+        const prNumber = pr.data.number
+        const { data: prInfoAfter } = await octokit.pulls.get({ owner, repo, pull_number: prNumber })
+        if (prInfoAfter.merged) {
+            const railwayKey = process.env.RAILWAY_API_KEY
+            if (railwayKey) {
+                console.log('Triggering deploy (placeholder).')
+                const child_process = require('child_process')
+                try {
+                    child_process.execSync('bash ../scripts/deploy-prod.sh', { stdio: 'inherit', cwd: path.resolve(root) })
+                    console.log('Deploy script executed (placeholder).')
+                } catch (err) {
+                    console.error('Deploy script failed or is not configured properly:', err.message)
+                }
+            } else {
+                console.log('RAILWAY_API_KEY not provided; skipping production deploy.')
+            }
+        } else {
+            console.log('PR not merged; skipping production deploy.')
+        }
     }
     console.log('Agent-runner finished')
 }
