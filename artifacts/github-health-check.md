@@ -1,26 +1,29 @@
 # GitHub Health Check
-Run Date: 2025-11-17T15:06:10.123Z
+Run Date: 2025-11-17T21:31:37.751Z
 
 ## Summary
-Open PRs: 1
+Open PRs: 5
 Stale PRs (>14 days since updated): 0
-Failing workflow runs (recent): 16
+Failing workflow runs (recent): 19
 Queued/in-progress runs: 0
 
 ## Recent Failing Workflows
-- Lighthouse Audit on master: failure (2025-11-17T14:59:04Z)
-- Auto Update Docs on master: failure (2025-11-17T14:59:04Z)
-- Sentry Error Monitoring on master: failure (2025-11-17T14:59:04Z)
-- npm_and_yarn in /friendly-city-print-shop for @octokit/plugin-paginate-rest, @octokit/request, @octokit/request-error, axios, axios - Update #1154838532 on master: failure (2025-11-17T14:47:28Z)
-- Auto Update Docs on master: failure (2025-11-17T14:36:40Z)
-- Sentry Error Monitoring on master: failure (2025-11-17T14:36:39Z)
-- Lighthouse Audit on master: failure (2025-11-17T14:36:39Z)
-- Detect committed secrets on agent/auto-1763389892416: failure (2025-11-17T14:33:05Z)
-- Detect committed secrets on agent/auto-1763389892416: failure (2025-11-17T14:32:13Z)
-- Detect committed secrets on master: failure (2025-11-16T19:53:41Z)
-- Auto Update Docs on master: failure (2025-11-16T19:53:41Z)
-- Detect committed secrets on master: failure (2025-11-16T19:50:23Z)
-- Auto Update Docs on master: failure (2025-11-16T19:50:23Z)
-- Auto Update Docs on master: failure (2025-11-16T19:49:21Z)
-- Detect committed secrets on master: failure (2025-11-16T19:49:21Z)
-- Auto Update Docs on master: failure (2025-11-16T19:47:44Z)
+- .github/workflows/sentry.yml on agent/auto-1763391919812: failure (2025-11-17T21:30:57Z)
+- Lighthouse Audit on master: failure (2025-11-17T21:29:39Z)
+- Lighthouse Audit on agent/auto-1763391919812: failure (2025-11-17T21:27:39Z)
+- .github/workflows/sentry.yml on agent/auto-1763391919812: failure (2025-11-17T21:27:32Z)
+- .github/workflows/sentry.yml on agent/auto-1763391919812: failure (2025-11-17T21:14:53Z)
+- .github/workflows/sentry.yml on agent/auto-1763391919812: failure (2025-11-17T21:14:00Z)
+- Lighthouse Audit on master: failure (2025-11-17T21:12:45Z)
+- Lighthouse Audit on master: failure (2025-11-17T21:11:33Z)
+- Auto Update Docs on master: failure (2025-11-17T21:11:33Z)
+- .github/workflows/sentry.yml on master: failure (2025-11-17T21:11:32Z)
+- .github/workflows/sentry.yml on agent/auto-1763391919812: failure (2025-11-17T21:11:18Z)
+- .github/workflows/sentry.yml on agent/auto-1763391919812: failure (2025-11-17T21:09:26Z)
+- Agent Runner on master: failure (2025-11-17T21:07:07Z)
+- Lighthouse Audit on agent/auto-1763391919812: failure (2025-11-17T21:06:26Z)
+- Agent Runner on master: failure (2025-11-17T21:04:19Z)
+- .github/workflows/sentry.yml on agent/auto-1763391919812: failure (2025-11-17T21:04:13Z)
+- Lighthouse Audit on master: failure (2025-11-17T21:02:53Z)
+- Agent Runner on master: failure (2025-11-17T21:02:13Z)
+- .github/workflows/sentry.yml on agent/auto-1763391919812: failure (2025-11-17T21:02:00Z)
