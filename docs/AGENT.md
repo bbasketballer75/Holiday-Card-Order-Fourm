@@ -48,4 +48,5 @@ Security notes:
 - The `agent-runner` detects `AGENT_CHAT_SECRETS` automatically and adds entries to `friendly-city-print-shop/.env.local`. If `--gh` or `--repo` are passed it will also set repo-level secrets via `gh secret set`.
 - The `add-secret-to-env.js` helper supports both CLI invocation and `AGENT_CHAT_SECRETS` parsing and can be used directly to persist secrets.
 - The `docs-auto-update` workflow prefers `REPO_WRITE_TOKEN` (a scoped personal access token) when set in the repository secrets to handle cases where `GITHUB_TOKEN` lacks push permissions.
+
 Agenic mode: automated agent enabled on 2025-11-17T14:42:30.588Z
