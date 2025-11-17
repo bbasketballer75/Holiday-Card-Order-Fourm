@@ -8,6 +8,9 @@ on:
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_STEP_DEBUG: true
+      ACTIONS_RUNNER_DEBUG: true
     defaults:
       run:
         working-directory: friendly-city-print-shop
@@ -18,10 +21,15 @@ jobs:
         run: npm ci
       - name: Build production bundle
         run: npm run build
+      - name: Diagnostic: list workflow 'uses' entries
+        run: |
+          echo "===== 'uses' entries in repository workflows ====="
+          grep -R "uses:\s*" .github/workflows || true
+          echo "===== End list ====="
       - name: Run Lighthouse (start server and test)
         run: npx start-server-and-test start http://localhost:3000 "npx lighthouse http://localhost:3000 --output html --output-path=./lighthouse-report.html --chrome-flags=--headless"
       - name: Upload Lighthouse report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: lighthouse-report
           path: ./lighthouse-report.html

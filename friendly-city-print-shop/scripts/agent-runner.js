@@ -69,6 +69,8 @@ async function main() {
 
     const git = simpleGit(root)
     let ownerRepo = await getOwnerRepoFromGitRemotes(git)
+<<<<<<< HEAD
+=======
     console.log('Git detection root:', root)
     try {
         const remotes = await git.getRemotes(true)
@@ -76,16 +78,20 @@ async function main() {
     } catch (e) {
         console.warn('Unable to list git remotes:', e.message)
     }
+>>>>>>> 3959b29ebc72ef4809b0437a1f5856b83d8e43b0
     // Fallback: use GITHUB_REPOSITORY if available (owner/repo)
     if (!ownerRepo && process.env.GITHUB_REPOSITORY) {
         const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
         if (owner && repo) ownerRepo = { owner, repo }
     }
     if (!ownerRepo) {
+<<<<<<< HEAD
+=======
         if (process.env.GITHUB_REPOSITORY) console.log('GITHUB_REPOSITORY present but failed to parse: ', process.env.GITHUB_REPOSITORY)
         else console.log('GITHUB_REPOSITORY env var is not present in environment')
     }
     if (!ownerRepo) {
+>>>>>>> 3959b29ebc72ef4809b0437a1f5856b83d8e43b0
         console.error('Unable to determine GitHub owner/repo from git remotes. Please set GITHUB_REPOSITORY env or ensure your git remotes are configured.')
         process.exit(1)
     }
@@ -110,7 +116,11 @@ async function main() {
     await git.commit(commitMsg)
 
     // If secrets were passed, persist them to .env.local and optionally GitHub secrets
+<<<<<<< HEAD
     if (args.addSecrets && args.addSecrets.length) {
+=======
+    if (args.addSecrets && args.addSecrets.length) {
+>>>>>>> 3959b29ebc72ef4809b0437a1f5856b83d8e43b0
         console.log('Agent-runner detected secret additions; writing to .env.local (values redacted)')
         const secretsArgs = args.addSecrets.flatMap((s) => [s])
         const repoSpec = `${ownerRepo.owner}/${ownerRepo.repo}`
@@ -118,10 +128,14 @@ async function main() {
         try {
             const child_process = require('child_process')
             const scriptPath = path.resolve(root, '..', 'scripts', 'add-secret-to-env.js')
+<<<<<<< HEAD
+            const envPathForScript = path.resolve(root, '.env.local')
+=======
             // Persist the .env.local in the package subfolder if it exists
             const envPathForScript = fs.existsSync(path.resolve(root, 'friendly-city-print-shop'))
                 ? path.resolve(root, 'friendly-city-print-shop', '.env.local')
                 : path.resolve(root, '.env.local')
+>>>>>>> 3959b29ebc72ef4809b0437a1f5856b83d8e43b0
             const cmdArgs = secretsArgs.concat(['--gh', `--repo=${repoSpec}`, `--path=${envPathForScript}`])
             child_process.execFileSync('node', [scriptPath, ...cmdArgs], { stdio: 'inherit' })
         } catch (err) {
@@ -163,6 +177,8 @@ async function main() {
     // Auto-merge if allowed by config
     const allowAutoMerge = Boolean(config && config.agent && config.agent.allowAutoMerge)
     const allowedBranches = (config && config.agent && config.agent.allowedAutoMergeBranches) || []
+    const enforceBranchProtection = Boolean(config && config.agent && config.agent.enforceBranchProtection)
+    const requireApprovalsForProduction = (config && config.agent && config.agent.requireApprovalsForProduction) || 1
     const isAllowedBranch = allowedBranches.some((b) => b === args.base || (b.endsWith('*') && args.base.startsWith(b.replace('*', ''))))
     if (allowAutoMerge && isAllowedBranch) {
         console.log('Agent configured to auto-merge into', args.base)
@@ -176,6 +192,41 @@ async function main() {
             const { data: prInfo } = await octokit.pulls.get({ owner, repo, pull_number: prNumber })
             if (prInfo.mergeable && prInfo.mergeable_state === 'clean') {
                 console.log('Merging PR now...')
+                // Before merging to production branches, check branch protection and approvals
+                if (['master', 'main'].includes(args.base) && enforceBranchProtection) {
+                    try {
+                        const bp = await octokit.repos.getBranchProtection({ owner, repo, branch: args.base })
+                        const rpr = bp.data.required_pull_request_reviews || {}
+                        const requiredApprovals = rpr.required_approving_review_count || requireApprovalsForProduction
+                        // List reviews for the PR and count unique approvers
+                        const { data: reviews } = await octokit.pulls.listReviews({ owner, repo, pull_number: prNumber })
+                        const approvedBy = new Set(reviews.filter(r => r.state === 'APPROVED').map(r => r.user && r.user.login).filter(Boolean))
+                        if (approvedBy.size < requiredApprovals) {
+                            console.log(`Insufficient approvals (${approvedBy.size}/${requiredApprovals}) for protected branch ${args.base}; delaying merge.`)
+                            // Not merged; continue polling
+                            await new Promise((r) => setTimeout(r, 30000))
+                            attempt++
+                            continue
+                        }
+                        // Optionally check if code owner reviews are required - if so, require at least one approval (we can't easily determine code owners here)
+                        if (rpr && rpr.require_code_owner_reviews) {
+                            console.log('Branch protection requires CODEOWNERS approval; ensuring at least one approval is present.')
+                            // If approvals exist and the PR is mergeable, treat as sufficient by default
+                            if (approvedBy.size === 0) {
+                                console.log('No codeowner approvals found; delaying merge.')
+                                await new Promise((r) => setTimeout(r, 30000))
+                                attempt++
+                                continue
+                            }
+                        }
+                    } catch (err) {
+                        if (err.status === 404) {
+                            console.log('Branch protection not found for branch', args.base, '; proceeding with default checks.')
+                        } else {
+                            console.warn('Error fetching branch protection:', err.message)
+                        }
+                    }
+                }
                 await octokit.pulls.merge({ owner, repo, pull_number: prNumber, merge_method: 'squash' })
                 console.log('PR merged')
                 merged = true
