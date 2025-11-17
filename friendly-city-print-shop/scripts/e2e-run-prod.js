@@ -13,6 +13,12 @@ const port = process.env.PORT || 3000;
 const hostname = process.env.E2E_HOST || '127.0.0.1';
 const baseURL = `http://${hostname}:${port}`;
 
+// Build a list of waitOn resources; include IPv6 loopback if not explicitly using IPv6
+const waitResources = [baseURL];
+if (!hostname.includes('[') && hostname !== '::1') {
+  waitResources.push(`http://[::1]:${port}`);
+}
+
 let serverProcess;
 
 async function cleanup() {
@@ -65,6 +71,7 @@ process.on('exit', () => {
   }
 });
 
+
 function runScript(command, args, opts = {}) {
   return new Promise((resolve, reject) => {
     const cp = spawn(
@@ -95,7 +102,7 @@ async function main() {
 
     // Start production server directly via node (gives us a handle to the child process)
     console.log('E2E run: starting production server');
-    serverProcess = spawn(
+        serverProcess = spawn(
       'node',
       ['node_modules/next/dist/bin/next', 'start', '-p', String(port), '-H', hostname],
       { cwd: root, stdio: 'inherit', env: process.env },
@@ -103,7 +110,7 @@ async function main() {
 
     // Wait for the server to respond
     console.log(`E2E run: waiting for ${baseURL} to be ready (timeout 120000ms)`);
-    await waitOn({ resources: [baseURL], timeout: 120000 });
+    await waitOn({ resources: waitResources, timeout: 120000 });
     console.log('E2E run: server is ready, running Playwright tests');
 
     try {
