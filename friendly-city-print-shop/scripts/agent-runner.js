@@ -69,10 +69,21 @@ async function main() {
 
     const git = simpleGit(root)
     let ownerRepo = await getOwnerRepoFromGitRemotes(git)
+    console.log('Git detection root:', root)
+    try {
+        const remotes = await git.getRemotes(true)
+        console.log('Git remotes detected:', remotes.map(r => r.name + ':' + r.refs.fetch).join(', '))
+    } catch (e) {
+        console.warn('Unable to list git remotes:', e.message)
+    }
     // Fallback: use GITHUB_REPOSITORY if available (owner/repo)
     if (!ownerRepo && process.env.GITHUB_REPOSITORY) {
         const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
         if (owner && repo) ownerRepo = { owner, repo }
+    }
+    if (!ownerRepo) {
+        if (process.env.GITHUB_REPOSITORY) console.log('GITHUB_REPOSITORY present but failed to parse: ', process.env.GITHUB_REPOSITORY)
+        else console.log('GITHUB_REPOSITORY env var is not present in environment')
     }
     if (!ownerRepo) {
         console.error('Unable to determine GitHub owner/repo from git remotes. Please set GITHUB_REPOSITORY env or ensure your git remotes are configured.')
