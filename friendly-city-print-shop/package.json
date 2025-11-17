@@ -28,7 +28,8 @@
     "clean:win": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/clean-win.ps1",
     "setup-powershell": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/setup-powershell-env.ps1",
     "test:e2e": "node node_modules/@playwright/test/cli.js test --reporter=html",
-    "test:e2e:ci": "cross-env PW_NO_WEB_SERVER=true npm run test:e2e"
+    "test:e2e:ci": "cross-env PW_NO_WEB_SERVER=true npm run test:e2e",
+    "deploy:prod": "bash ../scripts/deploy-prod.sh"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.32.1",
