@@ -9,21 +9,24 @@ export default function TemplateCard({
   description,
   price,
   imageUrl,
+  customizable = false,
+  onCustomize,
 }: {
   title: string;
   description: string;
   price?: number;
   imageUrl?: string | null;
+    customizable?: boolean;
+    onCustomize?: () => void;
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <Link href="/order" aria-label={`Order ${title} - $${price?.toFixed(2) ?? '1.00'}`}>
-      <div
-        className="card-holiday cursor-pointer group h-full flex flex-col relative overflow-hidden"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
+    <div
+      className="card-holiday group h-full flex flex-col relative overflow-hidden"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
         {/* Image Container */}
         <div className="relative w-full h-64 bg-gradient-to-br from-holiday-red/10 to-holiday-green/10 overflow-hidden flex items-center justify-center">
           {imageUrl ? (
@@ -67,17 +70,29 @@ export default function TemplateCard({
             </p>
           </div>
 
-          {/* Footer with price */}
-          <div className="mt-6 pt-6 border-t-2 border-holiday-silver flex justify-between items-center">
-            <div className="flex flex-col">
-              <span className="text-xs text-holiday-dark/60 uppercase tracking-wide">Price</span>
-              <span className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-holiday-gold to-holiday-red">
+        {/* Footer with price and button - elegant festive styling */}
+        <div className="mt-6 pt-6 border-t-2 border-holiday-gold flex flex-col sm:flex-row sm:justify-between items-center gap-4">
+          <div className="flex flex-col items-start">
+            <span className="text-xs text-holiday-dark/60 uppercase tracking-wide mb-1">Price</span>
+            <span className="text-2xl md:text-3xl font-bold text-holiday-gold drop-shadow-sm">
                 ${price?.toFixed(2) ?? '1.00'}
               </span>
             </div>
-            <button className="btn-holiday text-sm md:text-base transform group-hover:scale-110 transition-transform duration-300">
-              Order Now →
-            </button>
+          <div className="flex flex-col gap-2 items-center">
+            <Link href="/order" aria-label={`Order ${title} - $${price?.toFixed(2) ?? '1.00'}`}
+              className="bg-holiday-gold text-holiday-dark text-base font-bold px-8 py-3 rounded-full shadow-lg hover:bg-holiday-gold-light hover:scale-105 transition-transform duration-200 border-2 border-holiday-gold">
+              Order Now&nbsp;→
+            </Link>
+            {customizable && (
+              <button
+                type="button"
+                className="btn-holiday-secondary px-6 py-2 rounded-full text-sm font-bold mt-2"
+                onClick={onCustomize}
+              >
+                Customize
+              </button>
+            )}
+          </div>
           </div>
         </div>
 
@@ -85,7 +100,6 @@ export default function TemplateCard({
         <div className="absolute top-4 left-4 bg-holiday-red text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
           ⭐ Popular
         </div>
-      </div>
-    </Link>
+    </div>
   );
 }

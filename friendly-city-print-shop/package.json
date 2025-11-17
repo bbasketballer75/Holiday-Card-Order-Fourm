@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "agent:run": "node ./scripts/agent-runner.js",
     "dev": "node ./scripts/dev.js",
     "build": "next build",
     "start": "node ./scripts/start.js",
-    "lint": "next lint",
+    "lint": "eslint --ext .ts,.tsx,.js,.jsx --max-warnings=0 .",
     "format": "prettier --write .",
     "seed": "node ./scripts/seed.js",
     "test-setup": "node ./scripts/test-setup.js",
@@ -31,27 +32,31 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.32.1",
-    "next": "14.2.32",
+    "next": "^16.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "stripe": "^12.10.0"
+    "stripe": "^12.10.0",
+    "@octokit/rest": "^18.0.12",
+    "simple-git": "^3.20.0",
+    "yaml": "^2.2.1"
   },
   "devDependencies": {
-    "@types/react": "19.2.5",
-    "@types/node": "20.8.3",
-    "autoprefixer": "^10.4.14",
     "@playwright/test": "^1.43.0",
+    "@types/node": "20.8.3",
+    "@types/react": "19.2.5",
+    "autoprefixer": "^10.4.14",
     "cross-env": "^7.0.3",
     "dotenv": "^17.2.3",
     "eslint": "^8.44.0",
     "eslint-config-next": "^14.0.0",
+    "husky": "^8.0.0",
+    "lighthouse": "^13.0.1",
     "postcss": "^8.4.21",
     "prettier": "^3.6.2",
+    "start-server-and-test": "^1.14.0",
     "tailwindcss": "^3.4.0",
-    "husky": "^8.0.0",
     "typescript": "^5.2.2",
-    "wait-on": "^7.0.1",
-    "start-server-and-test": "^1.14.0"
+    "wait-on": "^7.0.1"
   },
   "overrides": {
     "rimraf": "4.4.1",
