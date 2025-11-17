@@ -1,0 +1,49 @@
+name: Agent Runner
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: 'If true, actually apply changes (push, PR, merge)'
+        required: false
+        default: 'false'
+      base:
+        description: 'Base branch for PRs'
+        required: false
+        default: 'master'
+      title:
+        description: 'Optional PR title'
+        required: false
+      body:
+        description: 'Optional PR body'
+        required: false
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    env:
+      AGENT_MODE: ${{ secrets.AGENT_MODE || '' }}
+      AGENT_GITHUB_TOKEN: ${{ secrets.AGENT_GITHUB_TOKEN || '' }}
+      RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY || '' }}
+      AGENT_TRUSTED: ${{ secrets.AGENT_TRUSTED || '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd friendly-city-print-shop
+          npm ci
+
+      - name: Run Agent Runner
+        run: |
+          cd friendly-city-print-shop
+          if [ "${{ inputs.apply }}" = 'true' ] || [ "${{ secrets.AGENT_MODE }}" = 'agenic' ]; then
+            npm run agent:run -- --apply --base ${{ inputs.base }} --title "${{ inputs.title }}" --body "${{ inputs.body }}"
+          else
+            npm run agent:run
+          fi
