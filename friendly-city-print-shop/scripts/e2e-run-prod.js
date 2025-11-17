@@ -13,6 +13,12 @@ const port = process.env.PORT || 3000;
 const hostname = process.env.E2E_HOST || '127.0.0.1';
 const baseURL = `http://${hostname}:${port}`;
 
+// Build a list of waitOn resources; include IPv6 loopback if not explicitly using IPv6
+const waitResources = [baseURL];
+if (!hostname.includes('[') && hostname !== '::1') {
+  waitResources.push(`http://[::1]:${port}`);
+}
+
 let serverProcess;
 
 async function cleanup() {
@@ -64,6 +70,19 @@ process.on('exit', () => {
     }
   }
 });
+=======
+const host = process.env.E2E_HOST || '127.0.0.1';
+const waitResources = [`http://${host.replace(/\[/g, '').replace(/\]/g, '')}:${port}`];
+
+// When Next.js binds only to IPv6 (::), wait-on will never see the server if it
+// probes 127.0.0.1. Provide an IPv6 fallback explicitly so whichever stack is
+// available can unlock the tests.
+if (!host.includes('[')) {
+  waitResources.push(`http://[::1]:${port}`);
+}
+
+let serverProcess;
+>>>>>>> df07897 (chore(agent): produce consistent workflow and agent-runner updates)
 
 function runScript(command, args, opts = {}) {
   return new Promise((resolve, reject) => {
@@ -103,7 +122,7 @@ async function main() {
 
     // Wait for the server to respond
     console.log(`E2E run: waiting for ${baseURL} to be ready (timeout 120000ms)`);
-    await waitOn({ resources: [baseURL], timeout: 120000 });
+    await waitOn({ resources: waitResources, timeout: 120000 });
     console.log('E2E run: server is ready, running Playwright tests');
 
     try {
