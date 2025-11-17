@@ -110,7 +110,7 @@ async function main() {
     await git.commit(commitMsg)
 
     // If secrets were passed, persist them to .env.local and optionally GitHub secrets
-    if (args.addSecrets && args.addSecrets.length) {
+        if (args.addSecrets && args.addSecrets.length) {
         console.log('Agent-runner detected secret additions; writing to .env.local (values redacted)')
         const secretsArgs = args.addSecrets.flatMap((s) => [s])
         const repoSpec = `${ownerRepo.owner}/${ownerRepo.repo}`
