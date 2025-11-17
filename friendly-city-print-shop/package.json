@@ -37,7 +37,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "stripe": "^12.10.0",
-    "@octokit/rest": "^18.0.12",
+    "@octokit/rest": "^22.0.1",
     "simple-git": "^3.20.0",
     "yaml": "^2.2.1"
   },
@@ -54,7 +54,7 @@
     "lighthouse": "^13.0.1",
     "postcss": "^8.4.21",
     "prettier": "^3.6.2",
-    "start-server-and-test": "^1.14.0",
+    "start-server-and-test": "^2.1.2",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.2.2",
     "wait-on": "^7.0.1"
