@@ -80,9 +80,44 @@ const waitResources = [`http://${host.replace(/\[/g, '').replace(/\]/g, '')}:${p
 if (!host.includes('[')) {
   waitResources.push(`http://[::1]:${port}`);
 }
+=======
+>>>>>>> e07ea42 (agent: automated update (2025-11-17T14:42:54.329Z))
 
 let serverProcess;
 >>>>>>> df07897 (chore(agent): produce consistent workflow and agent-runner updates)
+
+async function cleanup() {
+  try {
+    if (serverProcess && !serverProcess.killed) {
+      console.log('E2E run: stopping server');
+      try {
+        process.kill(serverProcess.pid, 'SIGTERM');
+      } catch (err) {
+        console.warn(
+          'E2E run: failed to kill server process by PID, attempting fallback cleanup',
+          err.message,
+        );
+        if (process.platform === 'win32') {
+          spawn(
+            'powershell',
+            [
+              '-NoProfile',
+              '-WindowStyle',
+              'Hidden',
+              '-Command',
+              `& { Get-NetTCPConnection -LocalPort ${port} | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force } }`,
+            ],
+            { stdio: 'ignore' },
+          );
+        } else {
+          spawn('bash', ['-lc', `fuser -k ${port}/tcp || true`], { stdio: 'ignore' });
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Cleanup error:', err.message);
+  }
+}
 
 function runScript(command, args, opts = {}) {
   return new Promise((resolve, reject) => {
