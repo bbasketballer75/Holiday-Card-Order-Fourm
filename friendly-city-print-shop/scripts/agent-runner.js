@@ -68,7 +68,12 @@ async function main() {
     }
 
     const git = simpleGit(root)
-    const ownerRepo = await getOwnerRepoFromGitRemotes(git)
+    let ownerRepo = await getOwnerRepoFromGitRemotes(git)
+    // Fallback: use GITHUB_REPOSITORY if available (owner/repo)
+    if (!ownerRepo && process.env.GITHUB_REPOSITORY) {
+        const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
+        if (owner && repo) ownerRepo = { owner, repo }
+    }
     if (!ownerRepo) {
         console.error('Unable to determine GitHub owner/repo from git remotes. Please set GITHUB_REPOSITORY env or ensure your git remotes are configured.')
         process.exit(1)
