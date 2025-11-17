@@ -78,46 +78,11 @@ async function main() {
 
     // Start production server directly via node (gives us a handle to the child process)
     console.log('E2E run: starting production server');
-    const serverProcess = spawn(
+    serverProcess = spawn(
       'node',
-      ['node_modules/next/dist/bin/next', 'start', '-p', String(port)],
+      ['node_modules/next/dist/bin/next', 'start', '-p', String(port), '-H', hostname],
       { cwd: root, detached: true, stdio: 'inherit', env: process.env },
     );
-
-    const cleanup = async () => {
-      try {
-        if (serverProcess && !serverProcess.killed) {
-          console.log('E2E run: stopping server');
-          try {
-            process.kill(serverProcess.pid, 'SIGTERM');
-          } catch (err) {
-            console.warn(
-              'E2E run: failed to kill server process by PID, attempting fallback cleanup',
-              err.message,
-            );
-            // Fallback: Try to cleanup port 3000 via node child process!
-            if (process.platform === 'win32') {
-              // Use powershell fallback
-              spawn(
-                'powershell',
-                [
-                  '-NoProfile',
-                  '-WindowStyle',
-                  'Hidden',
-                  '-Command',
-                  `& { Get-NetTCPConnection -LocalPort ${port} | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force } }`,
-                ],
-                { stdio: 'ignore' },
-              );
-            } else {
-              spawn('bash', ['-lc', `fuser -k ${port}/tcp || true`], { stdio: 'ignore' });
-            }
-          }
-        }
-      } catch (err) {
-        console.warn('Cleanup error:', err.message);
-      }
-    };
 
     // Wait for the server to respond
     console.log(`E2E run: waiting for ${baseURL} to be ready (timeout 120000ms)`);
