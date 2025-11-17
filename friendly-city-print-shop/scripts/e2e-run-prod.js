@@ -70,21 +70,6 @@ process.on('exit', () => {
     }
   }
 });
-=======
-const host = process.env.E2E_HOST || '127.0.0.1';
-const waitResources = [`http://${host.replace(/\[/g, '').replace(/\]/g, '')}:${port}`];
-
-// When Next.js binds only to IPv6 (::), wait-on will never see the server if it
-// probes 127.0.0.1. Provide an IPv6 fallback explicitly so whichever stack is
-// available can unlock the tests.
-if (!host.includes('[')) {
-  waitResources.push(`http://[::1]:${port}`);
-}
-=======
->>>>>>> e07ea42 (agent: automated update (2025-11-17T14:42:54.329Z))
-
-let serverProcess;
->>>>>>> df07897 (chore(agent): produce consistent workflow and agent-runner updates)
 
 async function cleanup() {
   try {
@@ -149,10 +134,11 @@ async function main() {
 
     // Start production server directly via node (gives us a handle to the child process)
     console.log('E2E run: starting production server');
-    serverProcess = spawn(
+        serverProcess = spawn(
       'node',
       ['node_modules/next/dist/bin/next', 'start', '-p', String(port), '-H', hostname],
       { cwd: root, stdio: 'inherit', env: process.env },
+        );
     );
 
     // Wait for the server to respond
