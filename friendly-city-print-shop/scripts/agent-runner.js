@@ -87,7 +87,7 @@ async function main() {
     if (args.addSecrets && args.addSecrets.length) {
         console.log('Agent-runner detected secret additions; writing to .env.local (values redacted)')
         const secretsArgs = args.addSecrets.flatMap((s) => [s])
-        const repoSpec = `${owner}/${repo}`
+        const repoSpec = `${ownerRepo.owner}/${ownerRepo.repo}`
         // Execute helper script: node ../../scripts/add-secret-to-env.js KEY=VALUE --gh --repo owner/repo
         try {
             const child_process = require('child_process')
