@@ -163,6 +163,8 @@ async function main() {
     // Auto-merge if allowed by config
     const allowAutoMerge = Boolean(config && config.agent && config.agent.allowAutoMerge)
     const allowedBranches = (config && config.agent && config.agent.allowedAutoMergeBranches) || []
+    const enforceBranchProtection = Boolean(config && config.agent && config.agent.enforceBranchProtection)
+    const requireApprovalsForProduction = (config && config.agent && config.agent.requireApprovalsForProduction) || 1
     const isAllowedBranch = allowedBranches.some((b) => b === args.base || (b.endsWith('*') && args.base.startsWith(b.replace('*', ''))))
     if (allowAutoMerge && isAllowedBranch) {
         console.log('Agent configured to auto-merge into', args.base)
@@ -176,6 +178,41 @@ async function main() {
             const { data: prInfo } = await octokit.pulls.get({ owner, repo, pull_number: prNumber })
             if (prInfo.mergeable && prInfo.mergeable_state === 'clean') {
                 console.log('Merging PR now...')
+                // Before merging to production branches, check branch protection and approvals
+                if (['master', 'main'].includes(args.base) && enforceBranchProtection) {
+                    try {
+                        const bp = await octokit.repos.getBranchProtection({ owner, repo, branch: args.base })
+                        const rpr = bp.data.required_pull_request_reviews || {}
+                        const requiredApprovals = rpr.required_approving_review_count || requireApprovalsForProduction
+                        // List reviews for the PR and count unique approvers
+                        const { data: reviews } = await octokit.pulls.listReviews({ owner, repo, pull_number: prNumber })
+                        const approvedBy = new Set(reviews.filter(r => r.state === 'APPROVED').map(r => r.user && r.user.login).filter(Boolean))
+                        if (approvedBy.size < requiredApprovals) {
+                            console.log(`Insufficient approvals (${approvedBy.size}/${requiredApprovals}) for protected branch ${args.base}; delaying merge.`)
+                            // Not merged; continue polling
+                            await new Promise((r) => setTimeout(r, 30000))
+                            attempt++
+                            continue
+                        }
+                        // Optionally check if code owner reviews are required - if so, require at least one approval (we can't easily determine code owners here)
+                        if (rpr && rpr.require_code_owner_reviews) {
+                            console.log('Branch protection requires CODEOWNERS approval; ensuring at least one approval is present.')
+                            // If approvals exist and the PR is mergeable, treat as sufficient by default
+                            if (approvedBy.size === 0) {
+                                console.log('No codeowner approvals found; delaying merge.')
+                                await new Promise((r) => setTimeout(r, 30000))
+                                attempt++
+                                continue
+                            }
+                        }
+                    } catch (err) {
+                        if (err.status === 404) {
+                            console.log('Branch protection not found for branch', args.base, '; proceeding with default checks.')
+                        } else {
+                            console.warn('Error fetching branch protection:', err.message)
+                        }
+                    }
+                }
                 await octokit.pulls.merge({ owner, repo, pull_number: prNumber, merge_method: 'squash' })
                 console.log('PR merged')
                 merged = true
