@@ -10,7 +10,17 @@ const fs = require('fs');
 
 const root = path.resolve(__dirname, '..');
 const port = process.env.PORT || 3000;
-const baseURL = `http://localhost:${port}`;
+const host = process.env.E2E_HOST || '127.0.0.1';
+const waitResources = [`http://${host.replace(/\[/g, '').replace(/\]/g, '')}:${port}`];
+
+// When Next.js binds only to IPv6 (::), wait-on will never see the server if it
+// probes 127.0.0.1. Provide an IPv6 fallback explicitly so whichever stack is
+// available can unlock the tests.
+if (!host.includes('[')) {
+  waitResources.push(`http://[::1]:${port}`);
+}
+
+let serverProcess;
 
 function runScript(command, args, opts = {}) {
   return new Promise((resolve, reject) => {

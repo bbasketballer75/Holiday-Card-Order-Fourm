@@ -17,7 +17,8 @@ on:
       body:
         description: 'Optional PR body'
         required: false
-
+  schedule:
+    - cron: '0 * * * *'
 jobs:
   run-agent:
     runs-on: ubuntu-latest
