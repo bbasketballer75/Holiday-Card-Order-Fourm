@@ -48,6 +48,23 @@ async function cleanup() {
   }
 }
 
+['SIGINT', 'SIGTERM'].forEach((signal) => {
+  process.on(signal, async () => {
+    await cleanup();
+    process.exit(1);
+  });
+});
+
+process.on('exit', () => {
+  if (serverProcess && !serverProcess.killed) {
+    try {
+      process.kill(serverProcess.pid, 'SIGTERM');
+    } catch (_) {
+      // ignore
+    }
+  }
+});
+
 function runScript(command, args, opts = {}) {
   return new Promise((resolve, reject) => {
     const cp = spawn(
@@ -81,7 +98,7 @@ async function main() {
     serverProcess = spawn(
       'node',
       ['node_modules/next/dist/bin/next', 'start', '-p', String(port), '-H', hostname],
-      { cwd: root, detached: true, stdio: 'inherit', env: process.env },
+      { cwd: root, stdio: 'inherit', env: process.env },
     );
 
     // Wait for the server to respond
@@ -117,6 +134,7 @@ async function main() {
     process.exit(0);
   } catch (err) {
     console.error('E2E run error:', err);
+    await cleanup();
     process.exit(1);
   }
 }
