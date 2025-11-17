@@ -30,6 +30,8 @@
     "test:e2e": "node node_modules/@playwright/test/cli.js test --reporter=html",
     "test:e2e:ci": "cross-env PW_NO_WEB_SERVER=true npm run test:e2e",
     "deploy:prod": "bash ../scripts/deploy-prod.sh"
+    ,"add-secret": "node ../scripts/add-secret-to-env.js"
+    ,"check:gh-health": "node ../scripts/github-health-check.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.32.1",

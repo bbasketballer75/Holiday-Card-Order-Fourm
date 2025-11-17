@@ -39,6 +39,15 @@ npm run seed
   - `winget search supabase` and `winget search supabase-cli` return no matches, so winget cannot install it at this time.
   - Chocolatey’s `supabase-cli` package is currently missing from the default community source (install fails with “package not found”).
 
+### Additional CLIs
+
+Install these once on your workstation (rerun the verification command whenever you upgrade versions):
+
+- **Railway CLI**: `npm install -g @railway/cli` (Windows/macOS/Linux) → verify with `railway --version`.
+- **Stripe CLI**: `winget install Stripe.StripeCLI` (Windows) or `brew install stripe/stripe-cli/stripe` (macOS) → verify with `stripe version`.
+- **Sentry CLI**: download the `sentry-cli` binary from [official releases](https://github.com/getsentry/sentry-cli/releases) or run `npm install -g @sentry/cli` → verify with `sentry-cli --version`.
+- **Lighthouse CLI**: bundled as a devDependency; run `npm install` and verify with `npx lighthouse --version`.
+
 ## Production Setup
 
 ### Create Production Accounts

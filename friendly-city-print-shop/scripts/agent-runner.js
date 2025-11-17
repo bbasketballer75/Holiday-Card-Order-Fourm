@@ -14,12 +14,13 @@ const simpleGit = require('simple-git')
 const yaml = require('yaml')
 
 function parseArgs(argv) {
-    const args = { apply: false, base: 'master', title: '', body: '' }
+    const args = { apply: false, base: 'master', title: '', body: '', addSecrets: [] }
     argv.slice(2).forEach((arg, idx, arr) => {
         if (arg === '--apply') args.apply = true
         if (arg === '--base' && arr[idx + 1]) args.base = arr[idx + 1]
         if (arg === '--title' && arr[idx + 1]) args.title = arr[idx + 1]
         if (arg === '--body' && arr[idx + 1]) args.body = arr[idx + 1]
+        if (arg === '--add-secret' && arr[idx + 1]) args.addSecrets.push(arr[idx + 1])
     })
     return args
 }
@@ -63,6 +64,12 @@ async function main() {
         process.exit(1)
     }
 
+    // If secrets were provided via chat in env var, parse and add
+    if (process.env.AGENT_CHAT_SECRETS) {
+        const chatSecrets = process.env.AGENT_CHAT_SECRETS.split(';').filter(Boolean)
+        args.addSecrets = (args.addSecrets || []).concat(chatSecrets)
+    }
+
     const status = await git.status()
     if (status.files.length === 0) {
         console.log('No changes to commit. Agent routine ending.')
@@ -75,6 +82,22 @@ async function main() {
     await git.add('./*')
     const commitMsg = `agent: automated update (${new Date().toISOString()})`
     await git.commit(commitMsg)
+
+    // If secrets were passed, persist them to .env.local and optionally GitHub secrets
+    if (args.addSecrets && args.addSecrets.length) {
+        console.log('Agent-runner detected secret additions; writing to .env.local (values redacted)')
+        const secretsArgs = args.addSecrets.flatMap((s) => [s])
+        const repoSpec = `${owner}/${repo}`
+        // Execute helper script: node ../../scripts/add-secret-to-env.js KEY=VALUE --gh --repo owner/repo
+        try {
+            const child_process = require('child_process')
+            const scriptPath = path.resolve(root, '..', 'scripts', 'add-secret-to-env.js')
+            const cmdArgs = secretsArgs.concat(['--gh', `--repo=${repoSpec}`])
+            child_process.execFileSync('node', [scriptPath, ...cmdArgs], { stdio: 'inherit' })
+        } catch (err) {
+            console.error('Failed to add secrets to .env.local via helper:', err.message)
+        }
+    }
 
     const dryRun = args.apply ? false : true
     if (dryRun) {
