@@ -122,7 +122,8 @@ async function main() {
             const envPathForScript = fs.existsSync(path.resolve(root, 'friendly-city-print-shop'))
                 ? path.resolve(root, 'friendly-city-print-shop', '.env.local')
                 : path.resolve(root, '.env.local')
-            const cmdArgs = secretsArgs.concat(['--gh', `--repo=${repoSpec}`, `--path=${envPathForScript}`])
+            const envPathForScript = path.resolve(root, '.env.local')
+            const cmdArgs = secretsArgs.concat(['--gh', `--repo=${repoSpec}`, `--path=${envPathForScript}`, `--path=${envPathForScript}`])
             child_process.execFileSync('node', [scriptPath, ...cmdArgs], { stdio: 'inherit' })
         } catch (err) {
             console.error('Failed to add secrets to .env.local via helper:', err.message)
