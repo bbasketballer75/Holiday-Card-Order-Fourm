@@ -86,7 +86,7 @@ async function main() {
     await git.push('origin', branchName)
     console.log('Pushed branch to origin:', branchName)
 
-    const ghToken = process.env.AGENT_GITHUB_TOKEN
+    const ghToken = process.env.AGENT_GITHUB_TOKEN || process.env.GITHUB_TOKEN
     if (!ghToken) {
         console.error('Missing AGENT_GITHUB_TOKEN in environment. Required to create PRs. Aborting.')
         process.exit(1)
