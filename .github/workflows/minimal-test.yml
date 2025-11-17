@@ -9,6 +9,8 @@ jobs:
   echo-test:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Print Hello
         run: echo "Hello from minimal test"
       - name: List actions uses
