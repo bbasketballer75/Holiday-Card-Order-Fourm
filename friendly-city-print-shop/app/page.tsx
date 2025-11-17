@@ -2,22 +2,21 @@ export default function Home() {
   return (
     <main id="main-content" className="min-h-screen flex flex-col">
       {/* Hero Section */}
-      <section className="gradient-holiday py-16 md:py-24 relative overflow-hidden">
-        <div className="container-holiday relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="mb-6 text-6xl md:text-7xl animate-bounce-subtle">🎄</div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+      <section className="gradient-holiday py-16 md:py-24 relative overflow-hidden flex flex-col items-center justify-center">
+        <div className="container-holiday relative z-10 flex flex-col items-center justify-center">
+          <div className="max-w-3xl w-full mx-auto text-center flex flex-col items-center justify-center">
+            <div className="mb-8 text-6xl md:text-7xl animate-bounce-subtle drop-shadow-lg">🎄</div>
+            <h1 className="text-5xl md:text-6xl font-bold mb-8 leading-tight text-gradient-holiday" style={{ WebkitTextFillColor: 'transparent' }}>
               Spread Holiday Joy
             </h1>
-            <p className="text-xl md:text-2xl text-holiday-dark/80 mb-8 leading-relaxed">
-              Craft beautiful, personalized holiday cards with Friendly City Print Shop. Perfect for
-              sharing warmth and cheer with everyone you care about.
+            <p className="text-xl md:text-2xl text-holiday-dark/80 mb-10 leading-relaxed">
+              Craft beautiful, personalized holiday cards with <span className="font-bold text-holiday-green">Friendly City Print Shop</span>. Perfect for sharing warmth and cheer with everyone you care about.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/templates" className="btn-holiday text-lg">
+            <div className="flex flex-col sm:flex-row gap-8 justify-center w-full">
+              <a href="/templates" className="btn-holiday text-lg w-full sm:w-auto shadow-lg">
                 🎨 Browse Beautiful Templates
               </a>
-              <a href="/order" className="btn-holiday-secondary text-lg">
+              <a href="/order" className="btn-holiday-secondary text-lg w-full sm:w-auto shadow-lg">
                 🛒 Order Your Custom Card
               </a>
             </div>
@@ -67,19 +66,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-gradient-to-r from-holiday-red to-holiday-green py-16 md:py-20">
-        <div className="container-holiday text-center text-white">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Spread Joy?</h2>
-          <p className="text-xl mb-8 text-white/90">
-            Join hundreds of happy customers sharing personalized holiday cards with their loved
-            ones.
+      {/* CTA Section - soft festive redesign */}
+      <section className="bg-holiday-cream py-16 md:py-20 border-t-4 border-holiday-gold">
+        <div className="container-holiday text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-holiday-green">Ready to Spread Joy?</h2>
+          <p className="text-xl mb-8 text-holiday-dark/80">
+            Join hundreds of happy customers sharing personalized holiday cards with their loved ones.
           </p>
           <a
             href="/templates"
-            className="btn-holiday bg-white text-holiday-red hover:text-white text-lg inline-block"
+            className="btn-holiday-gold text-lg font-bold px-8 py-4 rounded-xl shadow-lg hover:scale-105 transition-transform duration-200 inline-block"
           >
-            Get Started Today →
+            Get Started Today&nbsp;→
           </a>
         </div>
       </section>

@@ -14,8 +14,8 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 gradient-holiday border-b-4 border-holiday-gold shadow-lg">
-      <div className="container-holiday">
+    <header className="sticky top-0 z-50 w-full bg-holiday-cream/90 backdrop-blur-md border-b-4 border-holiday-gold shadow-lg">
+      <div className="container-holiday flex flex-col gap-0">
         {/* Skip link for accessibility */}
         <a
           href="#main-content"
@@ -24,23 +24,21 @@ export default function Header() {
           Skip to content
         </a>
 
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-0 md:gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="text-4xl transform group-hover:rotate-12 transition-transform duration-300">
+          <Link href="/" className="flex items-center gap-2 group min-w-[180px]">
+            <div className="text-4xl md:text-5xl transform group-hover:rotate-12 transition-transform duration-300 drop-shadow-lg">
               🎄
             </div>
-            <div>
-              <div className="text-gradient-holiday font-bold text-2xl md:text-3xl">
-                Friendly City
-              </div>
-              <div className="text-holiday-green text-xs md:text-sm font-semibold">Print Shop</div>
+            <div className="flex flex-col">
+              <span className="text-gradient-holiday font-bold text-2xl md:text-3xl leading-tight tracking-tight">Friendly City</span>
+              <span className="text-holiday-green text-xs md:text-sm font-semibold tracking-wide">Print Shop</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
           <nav
-            className="hidden md:flex items-center gap-1"
+            className="hidden md:flex items-center gap-2"
             role="navigation"
             aria-label="Main navigation"
           >
@@ -48,7 +46,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="px-4 py-2 text-holiday-dark font-semibold rounded-lg transition-all duration-300 relative group focus:outline-none focus:ring-2 focus:ring-holiday-gold focus:ring-offset-2"
+                className="px-5 py-2 text-holiday-dark font-semibold rounded-lg transition-all duration-300 relative group focus:outline-none focus:ring-2 focus:ring-holiday-gold focus:ring-offset-2 hover:bg-holiday-gold/10"
               >
                 {item.label}
                 <span className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-holiday-red to-holiday-green group-hover:w-full transition-all duration-300 rounded-full"></span>

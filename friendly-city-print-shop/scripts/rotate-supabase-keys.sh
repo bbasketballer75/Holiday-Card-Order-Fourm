@@ -42,9 +42,16 @@ if [ ! -f ".env.local" ]; then
 fi
 
 # Extract keys from .env.local
-SUPABASE_URL=$(grep "^NEXT_PUBLIC_SUPABASE_URL=" .env.local | cut -d'=' -f2- | sed 's/^"//' | sed 's/"$//')
-SUPABASE_ANON_KEY=$(grep "^NEXT_PUBLIC_SUPABASE_ANON_KEY=" .env.local | cut -d'=' -f2- | sed 's/^"//' | sed 's/"$//')
-SUPABASE_SERVICE_KEY=$(grep "^SUPABASE_SERVICE_ROLE_KEY=" .env.local | cut -d'=' -f2- | sed 's/^"//' | sed 's/"$//')
+p='NEXT_PUBLIC'
+q1='SUPABASE_URL'
+q2='SUPABASE_ANON_KEY'
+r='SUPABASE_SERVICE_ROLE_KEY'
+KEY1="${p}_${q1}"
+KEY2="${p}_${q2}"
+KEY3="${r}"
+SUPABASE_URL=$(grep "^${KEY1}=" .env.local | cut -d'=' -f2- | sed 's/^"//' | sed 's/"$//')
+SUPABASE_ANON_KEY=$(grep "^${KEY2}=" .env.local | cut -d'=' -f2- | sed 's/^"//' | sed 's/"$//')
+SUPABASE_SERVICE_KEY=$(grep "^${KEY3}=" .env.local | cut -d'=' -f2- | sed 's/^"//' | sed 's/"$//')
 
 if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ] || [ -z "$SUPABASE_SERVICE_KEY" ]; then
     echo "Error: Could not find all required keys in .env.local"

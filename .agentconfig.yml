@@ -1,0 +1,14 @@
+agent:
+  mode: agenic
+  allowAutoMerge: true
+  allowProductionDeploy: true
+  allowSecretRotation: true
+  allowLargePRs: true
+  allowedAutoMergeBranches:
+    - master
+    - staging
+    - feature/*
+  allowedPRSize: 500
+  requireCodeOwners: false
+  requireApprovalsBeforeProduction: false
+  artifactLogPath: artifacts/agent-logs/
