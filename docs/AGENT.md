@@ -41,3 +41,5 @@ Security notes:
 
 - Do not use admin-level tokens unless necessary; prefer scoped GitHub Apps or repo-scoped tokens.
 - Do not commit or print secret values in PRs or logs; the runner avoids that.
+
+Agenic mode: automated agent enabled on 2025-11-17T14:42:30.588Z
