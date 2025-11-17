@@ -10,17 +10,43 @@ const fs = require('fs');
 
 const root = path.resolve(__dirname, '..');
 const port = process.env.PORT || 3000;
-const host = process.env.E2E_HOST || '127.0.0.1';
-const waitResources = [`http://${host.replace(/\[/g, '').replace(/\]/g, '')}:${port}`];
-
-// When Next.js binds only to IPv6 (::), wait-on will never see the server if it
-// probes 127.0.0.1. Provide an IPv6 fallback explicitly so whichever stack is
-// available can unlock the tests.
-if (!host.includes('[')) {
-  waitResources.push(`http://[::1]:${port}`);
-}
+const hostname = process.env.E2E_HOST || '127.0.0.1';
+const baseURL = `http://${hostname}:${port}`;
 
 let serverProcess;
+
+async function cleanup() {
+  try {
+    if (serverProcess && !serverProcess.killed) {
+      console.log('E2E run: stopping server');
+      try {
+        process.kill(serverProcess.pid, 'SIGTERM');
+      } catch (err) {
+        console.warn(
+          'E2E run: failed to kill server process by PID, attempting fallback cleanup',
+          err.message,
+        );
+        if (process.platform === 'win32') {
+          spawn(
+            'powershell',
+            [
+              '-NoProfile',
+              '-WindowStyle',
+              'Hidden',
+              '-Command',
+              `& { Get-NetTCPConnection -LocalPort ${port} | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force } }`,
+            ],
+            { stdio: 'ignore' },
+          );
+        } else {
+          spawn('bash', ['-lc', `fuser -k ${port}/tcp || true`], { stdio: 'ignore' });
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Cleanup error:', err.message);
+  }
+}
 
 function runScript(command, args, opts = {}) {
   return new Promise((resolve, reject) => {
