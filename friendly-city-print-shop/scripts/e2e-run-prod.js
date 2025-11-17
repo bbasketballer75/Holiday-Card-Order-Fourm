@@ -71,38 +71,6 @@ process.on('exit', () => {
   }
 });
 
-async function cleanup() {
-  try {
-    if (serverProcess && !serverProcess.killed) {
-      console.log('E2E run: stopping server');
-      try {
-        process.kill(serverProcess.pid, 'SIGTERM');
-      } catch (err) {
-        console.warn(
-          'E2E run: failed to kill server process by PID, attempting fallback cleanup',
-          err.message,
-        );
-        if (process.platform === 'win32') {
-          spawn(
-            'powershell',
-            [
-              '-NoProfile',
-              '-WindowStyle',
-              'Hidden',
-              '-Command',
-              `& { Get-NetTCPConnection -LocalPort ${port} | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force } }`,
-            ],
-            { stdio: 'ignore' },
-          );
-        } else {
-          spawn('bash', ['-lc', `fuser -k ${port}/tcp || true`], { stdio: 'ignore' });
-        }
-      }
-    }
-  } catch (err) {
-    console.warn('Cleanup error:', err.message);
-  }
-}
 
 function runScript(command, args, opts = {}) {
   return new Promise((resolve, reject) => {
@@ -138,7 +106,6 @@ async function main() {
       'node',
       ['node_modules/next/dist/bin/next', 'start', '-p', String(port), '-H', hostname],
       { cwd: root, stdio: 'inherit', env: process.env },
-        );
     );
 
     // Wait for the server to respond
