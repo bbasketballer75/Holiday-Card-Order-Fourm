@@ -11,7 +11,7 @@
     "format": "prettier --write .",
     "lighthouse:audit": "node ./scripts/lighthouse-ci.js",
     "cleanup:branches": "node ./scripts/branch-cleanup.js --days=7 --dry-run=true",
-    "monitor:lighthouse-schedule": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/monitor-lighthouse-schedule.ps1 -TimeoutMinutes 60",
+    "monitor:lighthouse-schedule": "powershell -NoProfile -ExecutionPolicy Bypass -File ../scripts/monitor-lighthouse-schedule.ps1",
     "seed": "node ./scripts/seed.js",
     "test-setup": "node ./scripts/test-setup.js",
     "setup": "npm ci && npm run lint || true",
@@ -62,8 +62,7 @@
     "start-server-and-test": "^2.1.2",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.2.2",
-    "wait-on": "^7.0.1"
-    ,
+    "wait-on": "^7.0.1",
     "minimist": "^1.2.8"
   },
   "overrides": {
