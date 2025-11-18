@@ -25,11 +25,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run branch cleanup (dry-run)
+      - name: Run branch cleanup
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm run cleanup:branches -- --days=7 --dry-run=true
+          npm run cleanup:branches -- --days=30 --dry-run=false --delete-unmerged=true --pattern '^(agent|auto|dependabot)/'
 
       - name: Run branch cleanup (delete)
         if: github.event_name == 'workflow_dispatch'
@@ -37,4 +37,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # When manually dispatched, actually delete
-          npm run cleanup:branches -- --days=7 --dry-run=false
+          npm run cleanup:branches -- --days=30 --dry-run=false --delete-unmerged=true --pattern '^(agent|auto|dependabot)/'
