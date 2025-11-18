@@ -174,3 +174,13 @@ See `docs/CI-E2E.md` for details and recommended practices.
   - `LIGHTHOUSE_URL` (defaults to `http://127.0.0.1:${PORT}`)
   - `LIGHTHOUSE_PORT` (falls back to `PORT` or `3000`)
   - `LIGHTHOUSE_PRESET` (`desktop` by default)
+
+### Monitoring scheduled runs
+
+- Run `npm run monitor:lighthouse-schedule` to monitor the `lighthouse.yml` workflow for the first `schedule`-triggered run and print logs (uses the `gh` CLI). Example:
+
+```powershell
+npm run monitor:lighthouse-schedule
+```
+
+This script polls GitHub for scheduled workflow runs (default 60 minutes timeout) and displays the run logs when a schedule is detected.
