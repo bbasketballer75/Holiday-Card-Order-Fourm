@@ -1,0 +1,40 @@
+name: Pieces Integration
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  pieces-sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    defaults:
+      run:
+        working-directory: friendly-city-print-shop
+    env:
+      GITHUB_EVENT_PATH: ${{ github.event_path }}
+      PIECES_API_TOKEN: ${{ secrets.PIECES_API_TOKEN }}
+      PIECES_API_URL: ${{ secrets.PIECES_API_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install jq
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq curl
+
+      - name: Check PIECES_API_TOKEN
+        shell: bash
+        if: ${{ env.PIECES_API_TOKEN == '' }}
+        run: |
+          echo "Repository secret PIECES_API_TOKEN not set; skipping Pieces sync"
+
+      - name: Sync PR to Pieces
+        shell: bash
+        if: ${{ env.PIECES_API_TOKEN != '' }}
+        run: |
+          bash ./scripts/pieces-sync.sh
