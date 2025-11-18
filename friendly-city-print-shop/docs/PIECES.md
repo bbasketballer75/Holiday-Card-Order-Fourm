@@ -80,3 +80,33 @@ npm run mcp:start
 This starts a simple SSE server that can accept events from your local Pieces client and echo messages for testing. It listens on port 39300 by default and supports an endpoint at `/model_context_protocol/2024-11-05/message` to POST JSON messages to any connected SSE clients.
 
 - Keep repository secrets (`PIECES_API_TOKEN`) in GitHub and never check tokens into source control. For local testing you can export `PIECES_API_TOKEN` in your shell as shown above.
+
+## Testing the Pieces MCP gateway locally
+
+You can run a local gateway that connects to the MCP SSE endpoint (the mock server above) for development and integration testing.
+
+1. Install the `pieces-cli` Python package into your development Python environment (or install the cloned `cli-agent` repo):
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # or `.venv\Scripts\Activate.ps1` on Windows
+pip install --upgrade pip
+pip install pieces-cli  # or `pip install -e /path/to/cli-agent` when developing
+```
+
+1. Start the local mock MCP server:
+
+```bash
+npm run mcp:start
+```
+
+1. In a separate terminal, run the local gateway wrapper (defaults to the above mock SSE URL):
+
+```bash
+python ./scripts/py-run-mcp-gateway.py --upstream-url "http://localhost:39300/model_context_protocol/2024-11-05/sse"
+```
+
+This will run the MCPGateway and connect to the mock SSE server. The gateway will keep running until you Ctrl+C it; it will log tool discovery and notifications it receives from the SSE server.
+
+If you only want to use the gateway as a 'pieces' stdio server for testing local IDE clients, consult the `pieces mcp` commands to setup your integration (e.g. `pieces mcp setup vscode`).
+

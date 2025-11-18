@@ -13,6 +13,8 @@
     "pieces:sync": "bash ./scripts/pieces-sync.sh",
     "mcp:start": "node ./scripts/mcp-server.js",
     "mcp:dev": "node ./scripts/mcp-server.js",
+    "pieces:mcp:gateway": "python ./scripts/py-run-mcp-gateway.py",
+    "pieces:mcp:gateway:ps": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/run-pieces-mcp-gateway.ps1",
     "cleanup:branches": "node ./scripts/branch-cleanup.js --days=7 --dry-run=true",
     "monitor:lighthouse-schedule": "powershell -NoProfile -ExecutionPolicy Bypass -File ../scripts/monitor-lighthouse-schedule.ps1",
     "seed": "node ./scripts/seed.js",
