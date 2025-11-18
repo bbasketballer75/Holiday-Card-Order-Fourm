@@ -11,6 +11,8 @@ const host = process.env.LIGHTHOUSE_HOST || '127.0.0.1';
 const url = process.env.LIGHTHOUSE_URL || `http://${host}:${port}`;
 const waitTimeoutMs = Number(process.env.LIGHTHOUSE_WAIT_MS || 120000);
 const preset = process.env.LIGHTHOUSE_PRESET || 'desktop';
+const chromeFlags =
+    process.env.LIGHTHOUSE_CHROME_FLAGS || '--headless=new --no-sandbox --disable-dev-shm-usage';
 const outputDir = path.join(projectRoot, 'test-results', 'lighthouse');
 const timestamp = new Date().toISOString().split('.')[0].replace(/[:]/g, '-');
 const baseReportPath = path.join(outputDir, `lighthouse-report-${timestamp}`);
@@ -111,6 +113,7 @@ async function runLighthouse() {
         '--output=html',
         `--output-path=${baseReportPath}`,
         `--preset=${preset}`,
+        `--chrome-flags=${chromeFlags}`,
         '--quiet',
     ];
 
