@@ -41,7 +41,7 @@
     "@supabase/supabase-js": "^2.32.1",
     "next": "^16.0.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "^19.2.0",
     "stripe": "^12.10.0",
     "@octokit/rest": "^22.0.1",
     "simple-git": "^3.20.0",
