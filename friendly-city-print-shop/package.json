@@ -10,6 +10,7 @@
     "lint": "eslint --ext .ts,.tsx,.js,.jsx --max-warnings=0 .",
     "format": "prettier --write .",
     "lighthouse:audit": "node ./scripts/lighthouse-ci.js",
+    "pieces:sync": "bash ./scripts/pieces-sync.sh",
     "cleanup:branches": "node ./scripts/branch-cleanup.js --days=7 --dry-run=true",
     "monitor:lighthouse-schedule": "powershell -NoProfile -ExecutionPolicy Bypass -File ../scripts/monitor-lighthouse-schedule.ps1",
     "seed": "node ./scripts/seed.js",

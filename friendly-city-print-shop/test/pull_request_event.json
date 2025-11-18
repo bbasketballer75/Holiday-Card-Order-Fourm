@@ -1,0 +1,9 @@
+{
+  "pull_request": {
+    "number": 123,
+    "title": "Add new feature",
+    "body": "This PR adds a simple feature for testing.",
+    "html_url": "https://github.com/example/repo/pull/123",
+    "user": { "login": "developer" }
+  }
+}
