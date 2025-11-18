@@ -10,6 +10,7 @@
     "lint": "eslint --ext .ts,.tsx,.js,.jsx --max-warnings=0 .",
     "format": "prettier --write .",
     "lighthouse:audit": "node ./scripts/lighthouse-ci.js",
+    "monitor:lighthouse-schedule": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/monitor-lighthouse-schedule.ps1 -TimeoutMinutes 60",
     "seed": "node ./scripts/seed.js",
     "test-setup": "node ./scripts/test-setup.js",
     "setup": "npm ci && npm run lint || true",
