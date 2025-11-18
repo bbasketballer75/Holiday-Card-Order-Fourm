@@ -12,7 +12,7 @@ const url = process.env.LIGHTHOUSE_URL || `http://${host}:${port}`;
 const waitTimeoutMs = Number(process.env.LIGHTHOUSE_WAIT_MS || 120000);
 const preset = process.env.LIGHTHOUSE_PRESET || 'desktop';
 const outputDir = path.join(projectRoot, 'test-results', 'lighthouse');
-const timestamp = new Date().toISOString().replace(/[:]/g, '-');
+const timestamp = new Date().toISOString().split('.')[0].replace(/[:]/g, '-');
 const baseReportPath = path.join(outputDir, `lighthouse-report-${timestamp}`);
 const jsonReportPath = `${baseReportPath}.report.json`;
 const htmlReportPath = `${baseReportPath}.report.html`;
@@ -100,7 +100,7 @@ async function runLighthouse() {
         projectRoot,
         'node_modules',
         'lighthouse',
-        'lighthouse-cli',
+        'cli',
         'index.js',
     );
 

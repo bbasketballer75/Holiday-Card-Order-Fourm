@@ -1,35 +1,47 @@
 name: Lighthouse Audit
+
 on:
   push:
     branches:
       - master
       - main
+  schedule:
+    - cron: '0 14 * * *'
   workflow_dispatch:
+
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
-    env:
-      ACTIONS_STEP_DEBUG: true
-      ACTIONS_RUNNER_DEBUG: true
     defaults:
       run:
         working-directory: friendly-city-print-shop
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      PORT: 3000
+      LIGHTHOUSE_PRESET: desktop
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
       - name: Install dependencies
         run: npm ci
-      - name: Build production bundle
-        run: npm run build
-      - name: Diagnostic: list workflow 'uses' entries
-        run: |
-          echo "===== 'uses' entries in repository workflows ====="
-          grep -R "uses:\s*" .github/workflows || true
-          echo "===== End list ====="
-      - name: Run Lighthouse (start server and test)
-        run: npx start-server-and-test start http://localhost:3000 "npx lighthouse http://localhost:3000 --output html --output-path=./lighthouse-report.html --chrome-flags=--headless"
-      - name: Upload Lighthouse report
+
+      - name: Run Lighthouse audit script
+        run: npm run lighthouse:audit
+
+      - name: Upload Lighthouse reports
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: lighthouse-report
-          path: ./lighthouse-report.html
+          path: |
+            friendly-city-print-shop/test-results/lighthouse/*.report.html
+            friendly-city-print-shop/test-results/lighthouse/*.report.json
