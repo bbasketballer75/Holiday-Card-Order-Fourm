@@ -80,5 +80,7 @@ def create_gateway_mapping(proc: Popen) -> dict:
     `gateway_process['log']` mapping-style access. Use this helper to convert
     a raw `subprocess.Popen` instance into a mapping-like object.
     """
-    return {'proc': proc, 'log': getattr(proc, 'log', {})}
+    # If the passed `proc` is already a wrapper with a `proc` attribute, unwrap it
+    underlying = getattr(proc, 'proc', proc)
+    return {'proc': underlying, 'log': getattr(underlying, 'log', getattr(proc, 'log', {}))}
 

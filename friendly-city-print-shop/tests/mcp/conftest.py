@@ -39,11 +39,45 @@ def _drain_stream_to_file(proc, stream, path):
         pass
 
 
-# Historically we used a wrapper to expose `gateway_process['proc']` mapping (now
-# we yield the raw `Popen` instance and attach a `.log` attribute)
-# access. For stricter compatibility with subprocess-based APIs we now yield
-# the raw `subprocess.Popen` instance and attach a `log` attribute so tests
-# can still access generated log paths via `gateway_process.log['stdout']`.
+# Historically we used a wrapper to expose `gateway_process['proc']` mapping.
+# To remain backwards compatible we yield a small wrapper object which exposes
+# mapping-style `['proc']`/`['log']` access while also delegating attribute
+# access to the underlying `subprocess.Popen` instance so tests can still use
+# `gateway_process.stdin` like before.
+
+class GatewayProcessWrapper:
+    """Wrapper that holds a proc and log dict while delegating attributes to
+    the underlying `subprocess.Popen` instance.
+    """
+    def __init__(self, proc: subprocess.Popen, log: Dict[str, str]):
+        self.proc = proc
+        self.log = log
+
+    def __getitem__(self, key):
+        if key == 'proc':
+            return self.proc
+        if key == 'log':
+            return self.log
+        raise KeyError(key)
+
+    def __getattr__(self, name):
+        # Delegate attribute access to the underlying Popen
+        return getattr(self.proc, name)
+
+    def terminate(self):
+        return self.proc.terminate()
+
+    def kill(self):
+        return self.proc.kill()
+
+    def wait(self, timeout=None):
+        return self.proc.wait(timeout=timeout)
+
+    def poll(self):
+        return self.proc.poll()
+
+    def __repr__(self):
+        return f"<GatewayProcessWrapper pid={getattr(self.proc, 'pid', None)} log={self.log}>"
 
 
 @pytest.fixture(scope='module')
@@ -239,17 +273,19 @@ def gateway_process(mock_mcp_server, tmp_path_factory):
         proc.kill()
         pytest.skip('Gateway failed to start')
 
-    # Attach log paths directly to the underlying Popen instance for
-    # back-compatibility and to preserve `subprocess.Popen` behavior.
-    setattr(proc, 'log', {'stdout': gw_stdout_log, 'stderr': gw_stderr_log})
-    yield proc
+    # Attach log paths to the underlying Popen and return a wrapper that
+    # supports both mapping-style access and attribute delegation.
+    proc_log = {'stdout': gw_stdout_log, 'stderr': gw_stderr_log}
+    setattr(proc, 'log', proc_log)
+    wrapper = GatewayProcessWrapper(proc, proc_log)
+    yield wrapper
 
     # Teardown
     try:
-        proc.terminate()
+        wrapper.proc.terminate()
     except Exception:
-        proc.kill()
+        wrapper.proc.kill()
     try:
-        proc.wait(timeout=5)
+        wrapper.proc.wait(timeout=5)
     except Exception:
-        proc.kill()
+        wrapper.proc.kill()
