@@ -125,7 +125,7 @@ export default function ForumApp() {
       <ForumList items={items.slice(0, visibleCount)} onReply={handleReply} onLike={handleLike} />
       {items.length > visibleCount && (
         <div className="text-center mt-6">
-          <button onClick={loadMore} className="btn-holiday-secondary">
+          <button onClick={loadMore} className="btn btn-secondary">
             Load more messages
           </button>
         </div>

@@ -44,13 +44,13 @@ export default function ForumInput({ onAdd }: ForumInputProps) {
 
   return (
     <form onSubmit={handleSubmit} className="mb-8">
-      <div className="card-holiday p-6 bg-gradient-to-b from-holiday-white to-holiday-cream/50">
+      <div className="card p-6 bg-gradient-to-b from-background to-muted/50">
         {/* Header */}
         <div className="mb-4">
-          <label className="block font-bold text-holiday-green text-lg mb-2">
+          <label className="block font-bold text-primary text-lg mb-2">
             💬 Share Your Holiday Spirit
           </label>
-          <p className="text-holiday-dark/60 text-sm">
+          <p className="text-muted-foreground/60 text-sm">
             Ask questions, share feedback, or spread holiday cheer!
           </p>
         </div>
@@ -65,7 +65,7 @@ export default function ForumInput({ onAdd }: ForumInputProps) {
               void submitNow();
             }
           }}
-          className="textarea-holiday mb-4"
+          className="textarea mb-4"
           placeholder="What's on your mind? Share your holiday thoughts, questions, or festive wishes..."
           rows={4}
           maxLength={maxChars}
@@ -76,10 +76,10 @@ export default function ForumInput({ onAdd }: ForumInputProps) {
         <div className="flex justify-between items-end gap-4">
           {/* Character counter */}
           <div className="text-xs font-semibold">
-            <span className={isNearLimit ? 'text-holiday-red' : 'text-holiday-dark/60'}>
+            <span className={isNearLimit ? 'text-destructive' : 'text-muted-foreground/60'}>
               {charCount}
             </span>
-            <span className="text-holiday-dark/40 ml-1">/ {maxChars}</span>
+            <span className="text-muted-foreground/40 ml-1">/ {maxChars}</span>
           </div>
 
           {/* Submit button */}
@@ -87,7 +87,7 @@ export default function ForumInput({ onAdd }: ForumInputProps) {
             type="submit"
             aria-label="Post message to forum"
             disabled={isLoading || !value.trim()}
-            className="btn-holiday disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isLoading ? (
               <>

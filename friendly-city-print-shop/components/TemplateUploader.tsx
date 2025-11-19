@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState, ChangeEvent } from 'react';
+import { Template } from '../types';
 import { supabase } from '../lib/supabaseClient';
 
 export default function TemplateUploader() {
-  const [templates, setTemplates] = useState<any[]>([]);
+  const [templates, setTemplates] = useState<Template[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -14,7 +15,15 @@ export default function TemplateUploader() {
     const load = async () => {
       if (!supabase) return;
       const { data } = await supabase.from('templates').select('id, title, image_url');
-      setTemplates(data || []);
+      setTemplates(
+        (data || []).map((item) => ({
+          id: item.id,
+          title: item.title,
+          description: '',
+          price: 1.99,
+          image_url: item.image_url,
+        })),
+      );
       if (data && data.length > 0 && !selected) setSelected(data[0].id);
     };
     load();
@@ -52,7 +61,15 @@ export default function TemplateUploader() {
           setMessage('Upload succeeded but Supabase client not available to refresh list');
         } else {
           const { data } = await supabase.from('templates').select('id, title, image_url');
-          setTemplates(data || []);
+          setTemplates(
+            (data || []).map((item) => ({
+              id: item.id,
+              title: item.title,
+              description: '',
+              price: 1.99,
+              image_url: item.image_url,
+            })),
+          );
         }
       } else {
         setMessage(json?.error || 'Upload failed');
@@ -66,9 +83,9 @@ export default function TemplateUploader() {
   };
 
   return (
-    <div className="card-holiday p-6">
+    <div className="card p-6">
       <h2 className="text-xl font-bold mb-4">Template Image Uploader</h2>
-      <p className="text-sm text-holiday-dark/70 mb-4">
+      <p className="text-sm text-muted-foreground mb-4">
         Upload images for templates (saved to Supabase storage).
       </p>
 
@@ -77,7 +94,7 @@ export default function TemplateUploader() {
         <select
           value={selected ?? ''}
           onChange={(e) => setSelected(e.target.value)}
-          className="input-holiday w-full"
+          className="input w-full"
         >
           {templates.map((t) => (
             <option key={t.id} value={t.id}>
@@ -95,7 +112,7 @@ export default function TemplateUploader() {
           <button
             onClick={upload}
             disabled={!file || !selected || uploading}
-            className="btn-holiday"
+            className="btn btn-primary"
           >
             {uploading ? 'Uploading...' : 'Upload Image'}
           </button>
@@ -104,7 +121,7 @@ export default function TemplateUploader() {
               setFile(null);
               setMessage(null);
             }}
-            className="btn-holiday-secondary"
+            className="btn btn-secondary"
           >
             Clear
           </button>

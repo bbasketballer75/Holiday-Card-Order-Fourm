@@ -42,13 +42,16 @@
     "check:gh-health": "node ../scripts/github-health-check.js"
   },
   "dependencies": {
+    "@octokit/rest": "^22.0.1",
     "@supabase/supabase-js": "^2.32.1",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.19",
     "next": "^16.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "stripe": "^12.10.0",
-    "@octokit/rest": "^22.0.1",
     "simple-git": "^3.20.0",
+    "stripe": "^12.10.0",
     "yaml": "^2.2.1"
   },
   "devDependencies": {
@@ -62,93 +65,13 @@
     "eslint-config-next": "^14.0.0",
     "husky": "^8.0.0",
     "lighthouse": "^13.0.1",
+    "minimist": "^1.2.8",
     "postcss": "^8.4.21",
     "prettier": "^3.6.2",
     "start-server-and-test": "^2.1.2",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.2.2",
-    "wait-on": "^7.0.1",
-    "minimist": "^1.2.8"
-  },
-  "overrides": {
-    "rimraf": "4.4.1",
-    "glob": "9.3.1"
-  }
-}
-{
-  "name": "friendly-city-print-shop",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "agent:run": "node ./scripts/agent-runner.js",
-    "dev": "node ./scripts/dev.js",
-    "build": "next build",
-    "start": "node ./scripts/start.js",
-    "lint": "eslint --ext .ts,.tsx,.js,.jsx --max-warnings=0 .",
-    "format": "prettier --write .",
-    "lighthouse:audit": "node ./scripts/lighthouse-ci.js",
-    "pieces:sync": "bash ./scripts/pieces-sync.sh",
-<<<<<<< HEAD
-    "mcp:start": "node ./scripts/mcp-server.js",
-    "mcp:dev": "node ./scripts/mcp-server.js",
-    "pieces:mcp:gateway": "python ./scripts/py-run-mcp-gateway.py",
-    "pieces:mcp:gateway:ps": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/run-pieces-mcp-gateway.ps1",
-=======
->>>>>>> main
-    "cleanup:branches": "node ./scripts/branch-cleanup.js --days=7 --dry-run=true",
-    "monitor:lighthouse-schedule": "powershell -NoProfile -ExecutionPolicy Bypass -File ../scripts/monitor-lighthouse-schedule.ps1",
-    "seed": "node ./scripts/seed.js",
-    "test-setup": "node ./scripts/test-setup.js",
-    "setup": "npm ci && npm run lint || true",
-    "setup-dev-windows": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/setup-dev-tools.ps1",
-    "setup-dev-unix": "sh ./scripts/setup-dev-tools.sh",
-    "setup-dev": "npm run setup-dev-unix || npm run setup-dev-windows",
-    "prepare": "node ../scripts/install-husky.js",
-    "install-hooks": "git config core.hooksPath .githooks",
-    "secret-check": "node ./scripts/check-secrets.js",
-    "e2e:install": "npx playwright install",
-    "docs:generate": "node ../scripts/gen-docs.js",
-    "docs:check": "node ../scripts/check-docs.js",
-    "rotate-keys": "../scripts/rotate-supabase-keys.sh",
-    "e2e:seed": "node ./scripts/e2e-setup.js",
-    "e2e:cleanup": "node ./scripts/e2e-cleanup.js",
-    "e2e:run-prod": "npm run e2e:seed && npm run build && node ./scripts/e2e-run-prod.js",
-    "clean:win": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/clean-win.ps1",
-    "setup-powershell": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/setup-powershell-env.ps1",
-    "test:e2e": "node node_modules/@playwright/test/cli.js test --reporter=html",
-    "test:e2e:ci": "cross-env PW_NO_WEB_SERVER=true npm run test:e2e",
-    "deploy:prod": "bash ../scripts/deploy-prod.sh",
-    "add-secret": "node ../scripts/add-secret-to-env.js",
-    "check:gh-health": "node ../scripts/github-health-check.js"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.32.1",
-    "next": "^16.0.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "stripe": "^12.10.0",
-    "@octokit/rest": "^22.0.1",
-    "simple-git": "^3.20.0",
-    "yaml": "^2.2.1"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.43.0",
-    "@types/node": "24.10.1",
-    "@types/react": "19.2.5",
-    "autoprefixer": "^10.4.14",
-    "cross-env": "^7.0.3",
-    "dotenv": "^17.2.3",
-    "eslint": "^8.44.0",
-    "eslint-config-next": "^14.0.0",
-    "husky": "^8.0.0",
-    "lighthouse": "^13.0.1",
-    "postcss": "^8.4.21",
-    "prettier": "^3.6.2",
-    "start-server-and-test": "^2.1.2",
-    "tailwindcss": "^3.4.0",
-    "typescript": "^5.2.2",
-    "wait-on": "^7.0.1",
-    "minimist": "^1.2.8"
+    "wait-on": "^7.0.1"
   },
   "overrides": {
     "rimraf": "4.4.1",

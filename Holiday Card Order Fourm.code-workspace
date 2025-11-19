@@ -10,6 +10,9 @@
 		"editor.codeActionsOnSave": {
 			"source.fixAll.eslint": "explicit"
 		},
-		"pieces.cloudCapabilities": "Blended"
+		"pieces.cloudCapabilities": "Blended",
+		"[jsonc]": {
+			"editor.defaultFormatter": "vscode.json-language-features"
+		}
 	}
 }

@@ -70,7 +70,7 @@ export default function ForumList({
     return (
       <div className="text-center py-12">
         <div className="text-5xl mb-4">🎄</div>
-        <p className="text-holiday-dark/60 text-lg">
+        <p className="text-muted-foreground text-lg">
           No messages yet. Be the first to share your holiday spirit!
         </p>
       </div>
@@ -80,10 +80,7 @@ export default function ForumList({
   return (
     <div className="space-y-4">
       {items.map((it) => (
-        <div
-          key={it.id}
-          className="card-holiday p-6 group hover:shadow-xl transition-all duration-300"
-        >
+        <div key={it.id} className="card p-6 group hover:shadow-xl transition-all duration-300">
           {/* Message header */}
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-3">
@@ -96,8 +93,8 @@ export default function ForumList({
                 {it.user.charAt(0).toUpperCase()}
               </div>
               <div>
-                <p className="font-bold text-holiday-green text-lg">{it.user}</p>
-                <p className="text-xs text-holiday-dark/50">
+                <p className="font-bold text-primary text-lg">{it.user}</p>
+                <p className="text-xs text-muted-foreground">
                   {it.pending
                     ? 'Sending...'
                     : it.failed
@@ -118,13 +115,13 @@ export default function ForumList({
 
           {/* Message content */}
           <div className="pl-13">
-            <p className="text-holiday-dark leading-relaxed text-base">{it.text}</p>
+            <p className="text-foreground leading-relaxed text-base">{it.text}</p>
           </div>
 
           {/* Actions */}
-          <div className="mt-4 pt-4 border-t border-holiday-silver/50 flex justify-end gap-2 items-center">
+          <div className="mt-4 pt-4 border-t border-muted/50 flex justify-end gap-2 items-center">
             <button
-              className="text-holiday-gold hover:text-holiday-red transition-colors text-sm font-semibold"
+              className="text-accent hover:text-destructive transition-colors text-sm font-semibold"
               aria-label={`${liked.has(it.id) ? 'Unlike' : 'Like'} message by ${it.user}`}
               aria-pressed={liked.has(it.id)}
               disabled={pendingLikes.has(it.id)}
@@ -166,7 +163,7 @@ export default function ForumList({
             </button>
 
             <button
-              className="text-holiday-green hover:text-holiday-red transition-colors text-sm font-semibold"
+              className="text-primary hover:text-destructive transition-colors text-sm font-semibold"
               onClick={() => setReplyingTo(replyingTo === it.id ? null : it.id)}
               aria-expanded={replyingTo === it.id}
               aria-controls={`reply-${it.id}`}
@@ -187,7 +184,7 @@ export default function ForumList({
                     void submitReply(it.user);
                   }
                 }}
-                className="textarea-holiday w-full mb-2"
+                className="textarea w-full mb-2"
                 placeholder={`Reply to ${it.user}...`}
                 rows={3}
               />
@@ -197,11 +194,11 @@ export default function ForumList({
                     setReplyText('');
                     setReplyingTo(null);
                   }}
-                  className="btn-holiday-secondary"
+                  className="btn btn-secondary"
                 >
                   Cancel
                 </button>
-                <button onClick={() => void submitReply(it.user)} className="btn-holiday">
+                <button onClick={() => void submitReply(it.user)} className="btn btn-primary">
                   Send Reply
                 </button>
               </div>

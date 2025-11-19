@@ -20,8 +20,8 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="gradient-holiday border-t-4 border-holiday-gold mt-16">
-      <div className="container-holiday">
+    <footer className="gradient border-t-4 border-accent mt-16">
+      <div className="container">
         {/* Main footer content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
@@ -29,31 +29,30 @@ export default function Footer() {
             <div className="flex items-center gap-2 mb-4">
               <span className="text-3xl">🎄</span>
               <div>
-                <h4 className="font-bold text-lg text-holiday-green">Friendly City</h4>
-                <p className="text-xs text-holiday-dark/60">Print Shop</p>
+                <h4 className="font-bold text-lg text-primary">Friendly City</h4>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                  Print Shop
+                </p>
               </div>
             </div>
-            <p className="text-holiday-dark/70 text-sm leading-relaxed">
+            <p className="text-muted-foreground text-lg leading-relaxed">
               Creating beautiful holiday cards to spread joy and warmth this season.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h5 className="font-bold text-holiday-green mb-4 text-lg">Quick Links</h5>
+            <h5 className="font-bold text-primary mb-4 text-lg">Quick Links</h5>
             <ul className="space-y-2">
               <li>
-                <Link
-                  href="/"
-                  className="text-holiday-dark/70 hover:text-holiday-red transition-colors"
-                >
+                <Link href="/" className="text-foreground/70 hover:text-primary transition-colors">
                   🏠 Home
                 </Link>
               </li>
               <li>
                 <Link
                   href="/templates"
-                  className="text-holiday-dark/70 hover:text-holiday-red transition-colors"
+                  className="text-foreground/70 hover:text-primary transition-colors"
                 >
                   🎨 Templates
                 </Link>
@@ -61,7 +60,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/order"
-                  className="text-holiday-dark/70 hover:text-holiday-red transition-colors"
+                  className="text-foreground/70 hover:text-primary transition-colors"
                 >
                   🛒 Order Now
                 </Link>
@@ -69,7 +68,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/forum"
-                  className="text-holiday-dark/70 hover:text-holiday-red transition-colors"
+                  className="text-foreground/70 hover:text-primary transition-colors"
                 >
                   💬 Community
                 </Link>
@@ -79,13 +78,13 @@ export default function Footer() {
 
           {/* Support */}
           <div>
-            <h5 className="font-bold text-holiday-green mb-4 text-lg">Support</h5>
+            <h5 className="font-bold text-primary mb-4 text-lg">Support</h5>
             <ul className="space-y-2">
               {footerLinks.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-holiday-dark/70 hover:text-holiday-red transition-colors"
+                    className="text-foreground/70 hover:text-primary transition-colors"
                   >
                     {link.label}
                   </a>
@@ -96,7 +95,7 @@ export default function Footer() {
 
           {/* Connect */}
           <div>
-            <h5 className="font-bold text-holiday-green mb-4 text-lg">Connect</h5>
+            <h5 className="font-bold text-primary mb-4 text-lg">Connect</h5>
             <div className="flex gap-3 mb-4">
               {socialLinks.map((link) => (
                 <a
@@ -109,7 +108,7 @@ export default function Footer() {
                 </a>
               ))}
             </div>
-            <div className="text-sm text-holiday-dark/60">
+            <div className="text-sm text-muted-foreground/60">
               <p className="font-semibold mb-2">Holiday Hours:</p>
               <p>Mon - Fri: 9 AM - 6 PM</p>
               <p>Sat - Sun: 10 AM - 4 PM</p>
@@ -122,7 +121,7 @@ export default function Footer() {
 
         {/* Bottom footer */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-          <div className="text-holiday-dark/60">
+          <div className="text-muted-foreground/60">
             © {currentYear} Friendly City Print Shop. All rights reserved. 🎄
           </div>
           <div className="flex items-center gap-3 text-lg">
@@ -133,8 +132,8 @@ export default function Footer() {
         </div>
 
         {/* Festive message */}
-        <div className="mt-8 p-4 bg-holiday-red/10 border-l-4 border-holiday-red rounded text-center">
-          <p className="text-holiday-dark font-semibold">
+        <div className="mt-8 p-4 bg-destructive/10 border-l-4 border-destructive rounded text-center">
+          <p className="text-foreground font-semibold">
             ✨ Spread the holiday cheer! Share your favorite cards with friends and family. ✨
           </p>
         </div>

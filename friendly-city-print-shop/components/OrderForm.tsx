@@ -2,15 +2,9 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import Image from 'next/image';
+import { Template } from '../types';
 import CardCustomizer from './CardCustomizer';
 import { supabase } from '../lib/supabaseClient';
-
-interface Template {
-  id: string;
-  title: string;
-  price: number;
-  image_url?: string | null;
-}
 
 export default function OrderForm() {
   const [customizing, setCustomizing] = useState(false);
@@ -31,7 +25,15 @@ export default function OrderForm() {
       if (!supabase) return;
       const { data } = await supabase.from('templates').select('id, title, price, image_url');
       if (data) {
-        setTemplates(data);
+        setTemplates(
+          (data || []).map((item) => ({
+            id: item.id,
+            title: item.title,
+            description: '',
+            price: item.price,
+            image_url: item.image_url,
+          })),
+        );
         if (data.length > 0) setTemplate(data[0].id);
       }
     };
@@ -94,43 +96,65 @@ export default function OrderForm() {
                 onClick={() => setCurrentStep(step.num)}
                 aria-label={`Go to step ${step.num} - ${step.label}`}
                 aria-current={currentStep === step.num ? 'step' : undefined}
-                className={`w-14 h-14 rounded-full font-bold text-lg transition-all duration-300 flex items-center justify-center mb-2 ${
+                className={`w-14 h-14 rounded-full font-bold text-lg transition-all duration-300 flex items-center justify-center mb-2 touch-manipulation ${
                   currentStep >= step.num
-                    ? 'bg-gradient-to-br from-holiday-red to-holiday-gold text-white shadow-lg'
-                    : 'bg-holiday-silver text-holiday-dark/50'
+                    ? 'bg-gradient-to-br from-destructive to-accent text-white shadow-lg'
+                    : 'bg-muted text-muted-foreground'
                 }`}
               >
                 {step.icon}
               </button>
               <span
                 className={`text-xs font-bold text-center ${
-                  currentStep >= step.num ? 'text-holiday-green' : 'text-holiday-dark/40'
+                  currentStep >= step.num ? 'text-primary' : 'text-muted-foreground'
                 }`}
               >
                 {step.label}
               </span>
               {idx < steps.length - 1 && (
-                <div className="absolute top-7 left-full w-16 h-2 flex items-center" style={{ zIndex: 0 }}>
-                  <div className="w-full h-1 rounded-full bg-gradient-to-r from-holiday-gold via-holiday-red to-holiday-green opacity-60" />
+                <div
+                  className="absolute top-7 left-full w-16 h-2 flex items-center"
+                  style={{ zIndex: 0 }}
+                >
+                  <div className="w-full h-1 rounded-full bg-gradient-to-r from-accent via-destructive to-primary opacity-60" />
                 </div>
               )}
             </div>
           ))}
         </div>
+
+        {/* Trust indicators */}
+        <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <span className="text-green-600">🔒</span>
+            <span>Secure Payment</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-blue-600">🛡️</span>
+            <span>SSL Encrypted</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-purple-600">💳</span>
+            <span>Stripe Protected</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-orange-600">📦</span>
+            <span>Quality Guaranteed</span>
+          </div>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {currentStep === 1 && (
-          <div className="card-holiday p-8 animate-in fade-in">
-            <h3 className="text-2xl font-bold text-holiday-green mb-6">🎄 Select Your Holiday Card</h3>
+          <div className="card p-8 animate-in fade-in">
+            <h3 className="text-2xl font-bold text-primary mb-6">🎄 Select Your Holiday Card</h3>
             <div className="space-y-3">
               {templates.map((t) => (
                 <label
                   key={t.id}
-                  className="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:border-holiday-gold hover:bg-holiday-gold/5"
+                  className="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:border-accent hover:bg-accent/5"
                   style={{
-                    borderColor:
-                      template === t.id ? 'var(--holiday-green)' : 'var(--holiday-silver)',
+                    borderColor: template === t.id ? 'var(--primary)' : 'var(--muted)',
                   }}
                 >
                   <input
@@ -141,16 +165,18 @@ export default function OrderForm() {
                     className="w-5 h-5 cursor-pointer"
                   />
                   <div className="ml-3 flex items-center w-full">
-                    <div className="w-28 h-16 relative flex-shrink-0 rounded-md overflow-hidden bg-holiday-cream/50">
+                    <div className="w-28 h-16 relative flex-shrink-0 rounded-md overflow-hidden bg-muted/50">
                       {t.image_url ? (
                         <Image src={t.image_url} alt={t.title} fill className="object-cover" />
                       ) : (
-                          <div className="flex items-center justify-center h-full text-2xl opacity-40">🎁</div>
+                        <div className="flex items-center justify-center h-full text-2xl opacity-40">
+                          🎁
+                        </div>
                       )}
                     </div>
                     <span className="ml-4 flex-1">
-                      <span className="font-bold text-holiday-green">{t.title}</span>
-                      <span className="text-holiday-dark/60 ml-2">${t.price.toFixed(2)} each</span>
+                      <span className="font-bold text-primary">{t.title}</span>
+                      <span className="text-muted-foreground ml-2">${t.price.toFixed(2)} each</span>
                     </span>
                   </div>
                 </label>
@@ -159,7 +185,7 @@ export default function OrderForm() {
             <div className="flex gap-4 mt-6">
               <button
                 type="button"
-                className="btn-holiday flex-1"
+                className="btn btn-primary flex-1 min-h-[48px] touch-manipulation"
                 onClick={() => setCustomizing(true)}
                 disabled={!selectedTemplate}
               >
@@ -167,7 +193,7 @@ export default function OrderForm() {
               </button>
               <button
                 type="button"
-                className="btn-holiday-secondary flex-1"
+                className="btn btn-secondary flex-1 min-h-[48px] touch-manipulation"
                 onClick={() => setCurrentStep(2)}
                 disabled={!selectedTemplate}
               >
@@ -196,36 +222,38 @@ export default function OrderForm() {
         )}
 
         {currentStep === 2 && (
-          <div className="card-holiday p-8 animate-in fade-in space-y-5">
-            <h3 className="text-2xl font-bold text-holiday-green mb-6">👤 Your Information</h3>
+          <div className="card p-8 animate-in fade-in space-y-5">
+            <h3 className="text-2xl font-bold text-primary mb-6">👤 Your Information</h3>
             <div>
-              <label className="block font-bold text-holiday-green mb-2">Your Name</label>
+              <label className="block font-bold text-primary mb-2">Your Name</label>
               <input
                 type="text"
                 required
-                className="input-holiday"
+                className="input"
                 placeholder="Your full name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div>
-              <label className="block font-bold text-holiday-green mb-2">Recipient Name</label>
+              <label className="block font-bold text-primary mb-2">Recipient Name</label>
               <input
                 type="text"
                 required
-                className="input-holiday"
+                className="input"
                 placeholder="Who will receive this card?"
                 value={recipient}
                 onChange={(e) => setRecipient(e.target.value)}
               />
             </div>
             <div>
-              <label className="block font-bold text-holiday-green mb-2">Upload Photo or Design (optional)</label>
+              <label className="block font-bold text-primary mb-2">
+                Upload Photo or Design (optional)
+              </label>
               <input
                 type="file"
                 accept="image/*,application/pdf"
-                className="input-holiday"
+                className="input"
                 onChange={(e) => {
                   const file = e.target.files?.[0] || null;
                   if (file) {
@@ -239,22 +267,30 @@ export default function OrderForm() {
               />
               {uploadedPreview && (
                 <div className="mt-3 flex flex-col items-center">
-                  <span className="text-xs text-holiday-dark/60 mb-1">Preview:</span>
+                  <span className="text-xs text-muted-foreground mb-1">Preview:</span>
                   <Image
                     src={uploadedPreview}
                     alt="Uploaded preview"
                     width={320}
                     height={160}
-                    className="max-h-40 rounded-lg shadow-md border border-holiday-gold"
+                    className="max-h-40 rounded-lg shadow-md border border-accent"
                   />
                 </div>
               )}
             </div>
             <div className="flex gap-4 pt-4">
-              <button type="button" onClick={() => setCurrentStep(1)} className="btn-holiday-secondary flex-1">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(1)}
+                className="btn btn-secondary flex-1 min-h-[48px] touch-manipulation"
+              >
                 ← Back
               </button>
-              <button type="button" onClick={() => setCurrentStep(3)} className="btn-holiday flex-1">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(3)}
+                className="btn btn-primary flex-1 min-h-[48px] touch-manipulation"
+              >
                 Next: Message →
               </button>
             </div>
@@ -262,36 +298,52 @@ export default function OrderForm() {
         )}
 
         {currentStep === 3 && (
-          <div className="card-holiday p-8 animate-in fade-in space-y-5">
-            <h3 className="text-2xl font-bold text-holiday-green mb-6">💌 Your Holiday Message</h3>
+          <div className="card p-8 animate-in fade-in space-y-5">
+            <h3 className="text-2xl font-bold text-primary mb-6">💌 Your Holiday Message</h3>
             <div>
-              <label className="block font-bold text-holiday-green mb-2">Personal Message</label>
+              <label className="block font-bold text-primary mb-2">Personal Message</label>
               <textarea
-                className="textarea-holiday"
+                className="textarea"
                 placeholder="Write a special holiday message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={4}
               />
-              <p className="text-xs text-holiday-dark/50 mt-2">{message.length} characters</p>
+              <p className="text-xs text-muted-foreground mt-2">{message.length} characters</p>
             </div>
             <div>
-              <label className="block font-bold text-holiday-green mb-2">Quantity</label>
+              <label className="block font-bold text-primary mb-2">Quantity</label>
               <div className="flex items-center gap-4">
-                <button type="button" onClick={() => setQuantity(Math.max(1, quantity - 1))} className="btn-holiday-secondary px-4">
+                <button
+                  type="button"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="btn btn-secondary px-4"
+                >
                   −
                 </button>
-                <span className="text-2xl font-bold text-holiday-green w-12 text-center">{quantity}</span>
-                <button type="button" onClick={() => setQuantity(quantity + 1)} className="btn-holiday-secondary px-4">
+                <span className="text-2xl font-bold text-primary w-12 text-center">{quantity}</span>
+                <button
+                  type="button"
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="btn btn-secondary px-4"
+                >
                   +
                 </button>
               </div>
             </div>
             <div className="flex gap-4 pt-4">
-              <button type="button" onClick={() => setCurrentStep(2)} className="btn-holiday-secondary flex-1">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(2)}
+                className="btn btn-secondary flex-1 min-h-[48px] touch-manipulation"
+              >
                 ← Back
               </button>
-              <button type="button" onClick={() => setCurrentStep(4)} className="btn-holiday flex-1">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(4)}
+                className="btn btn-primary flex-1 min-h-[48px] touch-manipulation"
+              >
                 Review Order →
               </button>
             </div>
@@ -299,72 +351,94 @@ export default function OrderForm() {
         )}
 
         {currentStep === 4 && (
-          <div className="card-holiday p-8 animate-in fade-in space-y-6">
-            <h3 className="text-2xl font-bold text-holiday-green mb-6">✓ Review Your Order</h3>
-            <div className="bg-holiday-gold/10 border-l-4 border-holiday-gold p-6 rounded-lg space-y-3">
+          <div className="card p-8 animate-in fade-in space-y-6">
+            <h3 className="text-2xl font-bold text-primary mb-6">✓ Review Your Order</h3>
+            <div className="bg-accent/10 border-l-4 border-accent p-6 rounded-lg space-y-3">
               <div className="flex items-center gap-4">
-                <div className="w-28 h-20 relative rounded-md overflow-hidden bg-holiday-cream/50">
+                <div className="w-28 h-20 relative rounded-md overflow-hidden bg-muted/50">
                   {selectedTemplate?.image_url ? (
-                    <Image src={selectedTemplate.image_url} alt={selectedTemplate.title} fill className="object-cover" />
+                    <Image
+                      src={selectedTemplate.image_url}
+                      alt={selectedTemplate.title}
+                      fill
+                      className="object-cover"
+                    />
                   ) : (
-                      <div className="flex items-center justify-center h-full text-2xl opacity-40">🎁</div>
+                    <div className="flex items-center justify-center h-full text-2xl opacity-40">
+                      🎁
+                    </div>
                   )}
                 </div>
                 <div>
-                  <div className="font-bold text-holiday-green">{selectedTemplate?.title}</div>
-                  <div className="text-sm text-holiday-dark/60">
+                  <div className="font-bold text-primary">{selectedTemplate?.title}</div>
+                  <div className="text-sm text-muted-foreground">
                     {selectedTemplate ? `$${selectedTemplate.price.toFixed(2)} each` : ''}
                   </div>
                 </div>
               </div>
               <div className="flex justify-between items-center">
-                <span className="font-bold text-holiday-green">Card Template:</span>
-                <span className="text-holiday-dark">{selectedTemplate?.title}</span>
+                <span className="font-bold text-primary">Card Template:</span>
+                <span className="text-foreground">{selectedTemplate?.title}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="font-bold text-holiday-green">From:</span>
-                <span className="text-holiday-dark">{name || '(Not provided)'}</span>
+                <span className="font-bold text-primary">From:</span>
+                <span className="text-foreground">{name || '(Not provided)'}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="font-bold text-holiday-green">To:</span>
-                <span className="text-holiday-dark">{recipient || '(Not provided)'}</span>
+                <span className="font-bold text-primary">To:</span>
+                <span className="text-foreground">{recipient || '(Not provided)'}</span>
               </div>
-              <div className="border-t border-holiday-gold/30 pt-3 mt-3 flex justify-between items-center text-lg font-bold">
-                <span className="text-holiday-green">Total ({quantity}x):</span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-holiday-gold to-holiday-red">
+              <div className="border-t border-accent/30 pt-3 mt-3 flex justify-between items-center text-lg font-bold">
+                <span className="text-primary">Total ({quantity}x):</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-destructive">
                   ${totalPrice.toFixed(2)}
                 </span>
               </div>
             </div>
             {message && (
-              <div className="card-holiday p-4 bg-gradient-to-br from-holiday-white to-holiday-cream">
-                <p className="text-sm font-bold text-holiday-green mb-2">Message Preview:</p>
-                <p className="italic text-holiday-dark">{message}</p>
+              <div className="card p-4 bg-gradient-to-br from-background to-muted">
+                <p className="text-sm font-bold text-primary mb-2">Message Preview:</p>
+                <p className="italic text-foreground">{message}</p>
               </div>
             )}
             {uploadedPreview && (
-              <div className="card-holiday p-4 bg-gradient-to-br from-holiday-white to-holiday-cream">
-                <p className="text-sm font-bold text-holiday-green mb-2">Uploaded Design:</p>
+              <div className="card p-4 bg-gradient-to-br from-background to-muted">
+                <p className="text-sm font-bold text-primary mb-2">Uploaded Design:</p>
                 <Image
                   src={uploadedPreview}
                   alt="Your uploaded design"
                   width={200}
                   height={120}
-                  className="rounded-lg shadow-md border border-holiday-gold mx-auto"
+                  className="rounded-lg shadow-md border border-accent mx-auto"
                 />
               </div>
             )}
             <div className="flex gap-4 pt-4">
-              <button type="button" onClick={() => setCurrentStep(3)} className="btn-holiday-secondary flex-1">
+              <button
+                type="button"
+                onClick={() => setCurrentStep(3)}
+                className="btn btn-secondary flex-1 min-h-[48px] touch-manipulation"
+              >
                 ← Back
               </button>
               <button
                 type="submit"
                 disabled={loading || !name || !recipient}
-                className="btn-holiday flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px] touch-manipulation"
               >
-                {loading ? '💳 Processing...' : '💳 Checkout'}
+                {loading ? '💳 Processing...' : '💳 Secure Checkout'}
               </button>
+            </div>
+
+            {/* Security messaging */}
+            <div className="text-center text-xs text-muted-foreground space-y-2">
+              <p>🔒 Your payment information is encrypted and secure</p>
+              <div className="flex justify-center items-center gap-3">
+                <span className="text-blue-600 font-semibold">VISA</span>
+                <span className="text-red-600 font-semibold">MC</span>
+                <span className="text-blue-500 font-semibold">AMEX</span>
+                <span className="text-orange-500 font-semibold">Stripe</span>
+              </div>
             </div>
           </div>
         )}

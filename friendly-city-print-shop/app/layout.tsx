@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body
         className="min-h-screen flex flex-col"
-        style={{ backgroundColor: 'var(--holiday-cream)', color: 'var(--holiday-dark)' }}
+        style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}
       >
         <Header />
         <div className="flex-1">{children}</div>

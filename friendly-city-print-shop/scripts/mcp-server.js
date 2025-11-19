@@ -22,9 +22,14 @@ const server = http.createServer((req, res) => {
         res.write('\n');
         const id = Date.now() + Math.random();
         clients.add(res);
+        // Announce the endpoint for POSTing messages so SSE clients can start
+        // their POST writer (matches mcp.client.sse expectations)
+        sendSSE(res, 'endpoint', '/model_context_protocol/2024-11-05/message');
         sendSSE(res, 'connected', { id });
+        console.log('Client connected', { id, totalClients: clients.size });
         req.on('close', () => {
             clients.delete(res);
+            console.log('Client disconnected', { id, totalClients: clients.size });
         });
         return;
     }
@@ -35,9 +40,40 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             try {
                 const message = JSON.parse(body);
+                // Send the raw message directly, not wrapped in a "message" object
                 for (const client of clients) {
-                    sendSSE(client, 'message', { message });
+                    sendSSE(client, 'message', message);
                 }
+                // Log the broadcasting event to stdout to help tests detect activity
+                console.log('Broadcasting response', {
+                    payload: body,
+                    clients: clients.size,
+                });
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ delivered: true, clients: clients.size }));
+            } catch (err) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'invalid json', msg: err.message }));
+            }
+        });
+        return;
+    }
+
+    // Handle malformed URL from gateway (URL-encoded quotes issue)
+    if (req.method === 'POST' && parsed.pathname === '/model_context_protocol/2024-11-05/%22/model_context_protocol/2024-11-05/message%22') {
+        let body = '';
+        req.on('data', (chunk) => (body += chunk));
+        req.on('end', () => {
+            try {
+                const message = JSON.parse(body);
+                // Send the raw message directly, not wrapped in a "message" object
+                for (const client of clients) {
+                    sendSSE(client, 'message', message);
+                }
+                console.log('Broadcasting response (malformed URL fix)', {
+                    payload: body,
+                    clients: clients.size,
+                });
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ delivered: true, clients: clients.size }));
             } catch (err) {
