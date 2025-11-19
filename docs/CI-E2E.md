@@ -9,7 +9,7 @@ Run the CI-like e2e locally (production build, start server, run tests):
 cd friendly-city-print-shop
 npm ci
 npm run build
-npm run e2e:seed && npm run build && start-server-and-test 'npm run start' http://localhost:3000 'npm run test:e2e:ci' && npm run e2e:cleanup || npm run e2e:cleanup
+npm run e2e:seed && npm run build && node ./scripts/e2e-run-prod.js
 ~~~
 
 In CI, we provide options to either use a hosted Supabase (set secrets) or run a local Supabase using the Supabase CLI. If you prefer hosted Supabase, add the following secrets to GitHub Secrets (recommended to use a dedicated test project):
