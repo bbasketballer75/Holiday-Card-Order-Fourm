@@ -47,7 +47,7 @@
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.19",
-    "next": "^16.0.3",
+    "next": "^16.0.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "simple-git": "^3.20.0",
